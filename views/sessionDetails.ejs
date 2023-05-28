@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <h2 class="text-3xl font-semibold text-gray-600">
+                <%= sportsname %> Session #<%= sessionId %>
+            </h2>
+            <h4>This session is scheduled for <%= sessionDetails.sessionDate.toLocaleString('en-US', { day: '2-digit' ,
+                    month: '2-digit' , year: 'numeric' , hour: '2-digit' , minute: '2-digit' , hour12: true }) %>, to be
+                    played at "<%= sessionDetails.sessionVenue %>"</h4>
+            <h3>Players</h3>
+            <% if(sessionDetails.sessionPlayers.length> 0){ %>
+                <ul>
+                    <% for(var i=0; i < sessionDetails.sessionPlayers.length; i++) {%>
+                        <li>
+                            <div>
+                                <%= sessionDetails.sessionPlayers[i] %>
+                            </div>
+                        </li>
+                        <% } %>
+                </ul>
+                <% } %>
+</body>
+
+</html>

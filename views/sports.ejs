@@ -1,0 +1,13 @@
+<h5 title="Sports" id="Sports" class="font-semibold">
+    <%= title %>
+</h5>
+<ul class="list-none">
+    <% for(var i=0; i < data.length; i++) { %>
+        <li class="Sports-List">
+            <div class="flex-items-center w-fit my-2 px-2 py-1 rounded hover:bg-gray-100">
+                <a href="/sports/<%= data[i].id %>">
+                    <%= data[i].sportsname %>
+            </div>
+        </li>
+    <% } %>
+</ul>

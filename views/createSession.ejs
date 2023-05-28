@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Session</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <h2 class="text-3xl font-semibold text-gray-600">New <%= sportsname %> Session</h2>
+            <form action="/sessions" method="post">
+                <input type="hidden" name="sportsId" value="<%= sportsId %>" />
+                <div>
+                    <label for="sessionDate" class="block text-gray-700">When will this Sport Session be held?</label>
+                    <input type="datetime-local" name="sessionDate" id="sessionDate"  class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="sessionVenue" class="block text-gray-700">Where will this session be played?</label>
+                    <input type="text" name="sessionVenue" id="sessionVenue" class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="sessionPlayers" class="block text-gray-700">Who all will be joining you in this session?(comma-seperated)</label>
+                    <input type="text" name="sessionPlayers" id="sessionPlayers" class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="sessionCount" class="block text-gray-700">How many more players do you need?</label>
+                    <input type="integer" name="sessionCount" id="sessionCount" class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div>
+                    <button type="submit" class="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">Submit</button>
+                </div>
+            </form>
+</body>
+</html>

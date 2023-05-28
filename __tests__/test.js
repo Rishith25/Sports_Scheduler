@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-describe("First test Suite", () => {
-  test("First case", () => {
-    expect(true).toBe(true);
+describe("First test suite", () => {
+  test("simple", () => {
+    expect(1).toBe(1);
   });
 });
