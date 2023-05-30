@@ -10,7 +10,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+    static getUser(id) {
+      return this.findAll({
+        where: {
+          id: id,
+        },
+      });
+    }
   }
+
   User.init(
     {
       firstName: DataTypes.STRING,
