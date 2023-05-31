@@ -10,6 +10,39 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+    static async getPlayersList(sessionId) {
+      return this.findAll({
+        where: {
+          sessionId: sessionId,
+        },
+      });
+    }
+
+    static async getUserPlayer(userId, sessionId) {
+      return this.findAll({
+        where: {
+          userId,
+          sessionId,
+        },
+      });
+    }
+
+    static async joinPlayers({ userId, sessionId, userName }) {
+      return this.create({
+        userId,
+        sessionId,
+        userName,
+      });
+    }
+    static async leavePlayers({ userId, sessionId }) {
+      return this.destroy({
+        where: {
+          userId,
+          sessionId,
+        },
+      });
+    }
   }
   sessionPlayers.init(
     {

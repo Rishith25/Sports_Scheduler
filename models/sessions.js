@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       sessionPlayers,
       sessionCount,
       sportsId,
+      creatorId,
     }) {
       return this.create({
         sessionDate: sessionDate,
@@ -29,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         isCancelled: false,
         reason: null,
         sportsId: sportsId,
+        creatorId: creatorId,
       });
     }
 
@@ -68,6 +70,19 @@ module.exports = (sequelize, DataTypes) => {
         where: { id },
       });
     }
+
+    static async updatePlayers(sessionCount, sessionId) {
+      return this.update(
+        {
+          sessionCount,
+        },
+        {
+          where: {
+            id: sessionId,
+          },
+        }
+      );
+    }
   }
   Sessions.init(
     {
@@ -77,6 +92,7 @@ module.exports = (sequelize, DataTypes) => {
       sessionCount: DataTypes.INTEGER,
       isCancelled: DataTypes.BOOLEAN,
       reason: DataTypes.STRING,
+      creatorId: DataTypes.INTEGER,
     },
     {
       sequelize,

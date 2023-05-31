@@ -16,6 +16,7 @@
             <form action="/sessions" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <input type="hidden" name="sportsId" value="<%= sportsId %>" />
+                <input type="hidden" name="creatorId" value="<%= creatorId %>" />
                 <div>
                     <label for="sessionDate" class="block text-gray-700">When will this Sport Session be held?</label>
                     <input type="datetime-local" name="sessionDate" id="sessionDate"  class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">

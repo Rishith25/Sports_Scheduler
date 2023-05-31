@@ -62,7 +62,7 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  console.log("Serializing user in session", user.id);
+  // console.log("Serializing user in session", user.id);
   done(null, user.id);
 });
 
@@ -145,7 +145,7 @@ app.get(
     try {
       const loggedInUser = request.user.id;
       let user = await User.getUser(loggedInUser);
-      console.log(request.user);
+      // console.log(request.user);
       const SportsList = await Sports.getSportsList();
       // console.log(SportsList)
       if (request.accepts("html")) {
@@ -212,7 +212,7 @@ app.get(
     const sportsId = request.params.id;
     const sportsname = await Sports.getSportsTitle(sportsId);
     const sessionsList = await Sessions.upComingSessions(sportsId);
-    console.log(sessionsList);
+    // console.log(sessionsList);
     response.render("session", {
       sessionsList,
       sportsId,
@@ -232,6 +232,8 @@ app.post(
     // console.log("Sports Id", sportsId);
     const sessionDate = new Date(request.body.sessionDate);
     const formattedSessionDate = sessionDate.toISOString().slice(0, 16);
+    const user = request.user;
+    // console.log("Creator name", request.user)
     try {
       const session = await Sessions.createSession({
         sessionDate: formattedSessionDate,
@@ -239,7 +241,9 @@ app.post(
         sessionPlayers: request.body.sessionPlayers.split(","),
         sessionCount: request.body.sessionCount,
         sportsId: request.body.sportsId,
+        creatorId: request.body.creatorId,
       });
+
       return response.redirect(`/sessions/${session.id}`);
     } catch (error) {
       console.log(error);
@@ -255,9 +259,11 @@ app.get(
     const sportsId = request.params.id;
     const sportsname = await Sports.getSportsTitle(sportsId);
     console.log(sportsname);
+    const creatorId = request.user.id;
     response.render("createSession", {
       sportsId,
       sportsname,
+      creatorId,
       csrfToken: request.csrfToken(),
     });
   }
@@ -268,17 +274,118 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const sessionId = request.params.id;
-    console.log(sessionId);
+    // console.log(sessionId);
     const sessionDetails = await Sessions.getSessionDetails(sessionId);
-    console.log(sessionDetails);
+    // console.log(sessionDetails);
     const sportsname = await Sports.getSportsTitle(sessionDetails.sportsId);
-    console.log(sportsname);
+    const userId = request.user.id;
+    const userName = request.user.firstName + " " + request.user.lastName;
+
+    const sessionPlayer = await sessionPlayers.getPlayersList(sessionId);
+    const userPlayers = await sessionPlayers.getUserPlayer(userId, sessionId);
+    // console.log(sessionPlayer)
+
+    //IsFull
+    const isFull = sessionPlayer.length >= sessionDetails.sessionCount;
+
+    //IsParticipant
+    const isParticipant = userPlayers.length > 0;
+    //IsPrevious
+    const currentDate = new Date();
+    const isPrevious = sessionDetails.sessionDate < currentDate;
+    //IsCreator
+    const creator = await User.getCreatorName(sessionDetails.creatorId);
+    let isCreator = false;
+    if (userId == sessionDetails.creatorId) {
+      isCreator = true;
+    }
     response.render("sessionDetails", {
+      userName,
+      userId,
       sessionId,
       sessionDetails,
       sportsname,
+      sessionPlayer,
+      userPlayers,
+      isCreator,
+      isPrevious,
+      isParticipant,
+      isFull,
+      creator,
       csrfToken: request.csrfToken(),
     });
+  }
+);
+
+app.post(
+  "/sessions/:id/join",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const sessionId = request.params.id;
+      const session = await Sessions.getSessionDetails(sessionId);
+      const userId = request.user.id;
+
+      const isParticipant = await sessionPlayers.getUserPlayer(
+        userId,
+        sessionId
+      );
+      if (isParticipant.length > 0) {
+        return response
+          .status(400)
+          .json({ message: "You are already a participant in this session" });
+      }
+
+      const SessionPlayersList = await sessionPlayers.getPlayersList(sessionId);
+      if (SessionPlayersList.length >= session.sessionCount) {
+        return response
+          .status(400)
+          .json({ message: "This session has reached the limit" });
+      } else {
+        const updatePlayersCount = await Sessions.updatePlayers(
+          session.sessionCount - 1,
+          sessionId
+        );
+      }
+
+      await sessionPlayers.joinPlayers({
+        userId,
+        sessionId,
+        userName: request.user.firstName + " " + request.user.lastName,
+      });
+
+      return response
+        .status(200)
+        .json({ message: "You joined the session successfully" });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.delete(
+  "/sessions/:id/leave",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const sessionId = request.params.id;
+    const session = await Sessions.getSessionDetails(sessionId);
+    const userId = request.user.id;
+
+    const updatePlayersCount = await Sessions.updatePlayers(
+      session.sessionCount + 1,
+      sessionId
+    );
+    console.log(updatePlayersCount);
+    try {
+      await sessionPlayers.leavePlayers({ userId, sessionId });
+      return response
+        .status(200)
+        .json({ message: "You leave the session successfully" });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
   }
 );
 

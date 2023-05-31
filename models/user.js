@@ -11,10 +11,18 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
-    static getUser(id) {
+    static async getUser(id) {
       return this.findAll({
         where: {
           id: id,
+        },
+      });
+    }
+
+    static async getCreatorName(creatorId) {
+      return this.findOne({
+        where: {
+          id: creatorId,
         },
       });
     }

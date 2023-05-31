@@ -6,8 +6,53 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/style.css" />
+    <script>
+        var token = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content");
+
+        function joinSession() {
+            fetch(`/sessions/<%= sessionId %>/join`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "_csrf": token,
+                })
+            }).then((res) => {
+                if (res.ok) {
+                    window.location.reload();
+                }
+            })
+                .catch((err) => {
+                    console.error(err)
+                })
+        }
+
+        function leaveSession() {
+            fetch(`/sessions/<%= sessionId %>/leave`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "_csrf": token
+                })
+            }).then((res) => {
+                if (res.ok) {
+                    window.location.reload();
+                }
+
+            })
+                .catch((err) => {
+                    console.error(err)
+                })
+        }
+    </script>
 </head>
 
 <body>
@@ -15,15 +60,17 @@
         <div class="col-start-3 col-span-2">
             <h2 class="text-3xl font-semibold text-gray-600">
                 <%= sportsname %> Session #<%= sessionId %>
+                        <%= creator.firstName %>
+                            <%= userName %>
             </h2>
             <h4>This session is scheduled for <%= sessionDetails.sessionDate.toLocaleString('en-US', { day: '2-digit' ,
                     month: '2-digit' , year: 'numeric' , hour: '2-digit' , minute: '2-digit' , hour12: true }) %>, to be
                     played at "<%= sessionDetails.sessionVenue %>"</h4>
             <h3>Players</h3>
             <% if(sessionDetails.sessionPlayers.length> 0){ %>
-                <ul>
+                <ul class="mt-2">
                     <% for(var i=0; i < sessionDetails.sessionPlayers.length; i++) {%>
-                        <li>
+                        <li class="border border-gray-300 rounded-md p-2 mb-2">
                             <div>
                                 <%= sessionDetails.sessionPlayers[i] %>
                             </div>
@@ -31,6 +78,42 @@
                         <% } %>
                 </ul>
                 <% } %>
+
+                    <% if(sessionPlayer.length> 0) { %>
+                        <ul class="list-none mt-4">
+                            <% for(var i=0; i < sessionPlayer.length; i++) { %>
+                                <li class="users border border-gray-300 rounded-md p-2 mb-2">
+                                    <div>
+                                        <% if(sessionPlayer[i].userId==userId) { %>
+                                            <h3 class="font-bold">You</h3>
+                                            <% } else { %>
+                                                <% if(sessionDetails.creatorId==sessionPlayer[i].userId) { %>
+                                                    <h3>
+                                                        <%= sessionPlayer[i].userName %>
+                                                    </h3>
+                                                    <h3 class="text-gray-500">Organizer</h3>
+                                                    <% }else{ %>
+                                                        <h3>
+                                                            <%= sessionPlayer[i].userName %>
+                                                        </h3>
+                                                        <% } %>
+                                                            <% } %>
+                                    </div>
+                                </li>
+                                <% } %>
+                        </ul>
+                        <% } else { %>
+                            <p class="mt-4">No Players have joined this session.</p>
+                            <% } %>
+
+                                <% if(!isParticipant && !isFull & !isPrevious) { %>
+                                    <button class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" type="submit" onclick="joinSession()">Join Session</button>
+                                    <% } else if(isParticipant) { %>
+                                        <p class="mt-4">You are already a Participant in this Session</p>
+                                        <button class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" type="submit" onclick="leaveSession()">Leave Session</button>
+                                        <% } else if (isFull) { %>
+                                            <p class="mt-4">This session is Full</p>
+                                            <% } %>
 </body>
 
 </html>
