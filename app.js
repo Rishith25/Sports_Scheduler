@@ -244,6 +244,14 @@ app.post(
         creatorId: request.body.creatorId,
       });
 
+      const sessionId = session.id;
+      const userId = request.body.creatorId;
+      const userName = request.user.firstName + " " + request.user.lastName;
+      sessionPlayers.joinCreator({
+        userId,
+        sessionId,
+        userName,
+      });
       return response.redirect(`/sessions/${session.id}`);
     } catch (error) {
       console.log(error);
@@ -290,9 +298,11 @@ app.get(
 
     //IsParticipant
     const isParticipant = userPlayers.length > 0;
+
     //IsPrevious
     const currentDate = new Date();
     const isPrevious = sessionDetails.sessionDate < currentDate;
+
     //IsCreator
     const creator = await User.getCreatorName(sessionDetails.creatorId);
     let isCreator = false;
@@ -389,4 +399,82 @@ app.delete(
   }
 );
 
+app.get(
+  "/sessions/:id/cancel",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const sessionId = request.params.id;
+    response.render("cancelSession", {
+      sessionId,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/sessions/:id/cancel",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const sessionId = request.params.id;
+      const session = await Sessions.getSessionDetails(sessionId);
+
+      const reason = request.body.reason;
+
+      await Sessions.cancellationUpdate({
+        reason: reason,
+        sessionId,
+      });
+      response.redirect(`/sports/${session.sportsId}`);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.delete(
+  "/sessions/:id/deleteSessionMember",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const memberId = request.body.memberId;
+    const sessionId = request.params.id;
+    const session = await Sessions.getSessionDetails(sessionId);
+    session.sessionPlayers.splice(memberId, 1);
+    try {
+      const player = await Sessions.deleteSessionMember(
+        session.sessionPlayers,
+        sessionId
+      );
+      return response.json({ success: true });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.delete(
+  "/sessions/:id/deleteSessionPlayer",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const userId = request.body.userId;
+    const sessionId = request.params.id;
+    const session = await Sessions.getSessionDetails(sessionId);
+    const updatePlayersCount = await Sessions.updatePlayers(
+      session.sessionCount + 1,
+      sessionId
+    );
+    try {
+      const player = await sessionPlayers.deleteSessionPlayer({
+        userId,
+        sessionId,
+      });
+      return response.json({ success: true });
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
 module.exports = app;

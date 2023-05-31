@@ -11,6 +11,14 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
+    static async joinCreator({ userId, sessionId, userName }) {
+      return this.create({
+        userId,
+        sessionId,
+        userName,
+      });
+    }
+
     static async getPlayersList(sessionId) {
       return this.findAll({
         where: {
@@ -36,6 +44,15 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
     static async leavePlayers({ userId, sessionId }) {
+      return this.destroy({
+        where: {
+          userId,
+          sessionId,
+        },
+      });
+    }
+
+    static async deleteSessionPlayer({ userId, sessionId }) {
       return this.destroy({
         where: {
           userId,

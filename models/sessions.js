@@ -83,6 +83,32 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+
+    static async cancellationUpdate({ reason, sessionId }) {
+      return this.update(
+        {
+          isCancelled: true,
+          reason: reason,
+        },
+        {
+          where: {
+            id: sessionId,
+          },
+        }
+      );
+    }
+    static async deleteSessionMember(sessionPlayers, sessionId) {
+      return this.update(
+        {
+          sessionPlayers: sessionPlayers,
+        },
+        {
+          where: {
+            id: sessionId,
+          },
+        }
+      );
+    }
   }
   Sessions.init(
     {
