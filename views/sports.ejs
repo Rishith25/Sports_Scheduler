@@ -1,13 +1,16 @@
-<h5 title="Sports" id="Sports" class="font-semibold">
-    <%= title %>
-</h5>
+<h5 title="Sports" id="Sports" class="font-semibold text-2xl underline">Available <%= title %></h5>
 <ul class="list-none">
-    <% for(var i=0; i < data.length; i++) { %>
-        <li class="Sports-List">
-            <div class="flex-items-center w-fit my-2 px-2 py-1 rounded hover:bg-gray-100">
-                <a href="/sports/<%= data[i].id %>">
-                    <%= data[i].sportsname %>
-            </div>
-        </li>
-    <% } %>
+  <% if(data.length> 0) {%> <% for(var i=0; i < data.length; i++) { %>
+  <li class="Sports-List">
+    <div
+      class="flex-items-center w-fit my-2 px-2 py-1 rounded hover:bg-gray-100"
+    >
+      <a class="border-gray-300 rounded p-2" href="/sports/<%= data[i].id %>"> <%= data[i].sportsname %></a>
+    </div>
+  </li>
+  <% } %> <% } else { %>
+  <h2 class="font-semibold font-serif text-red-400 font-semibold font-serif">
+    There are no sports available for scheduling a session
+  </h2>
+  <% } %>
 </ul>

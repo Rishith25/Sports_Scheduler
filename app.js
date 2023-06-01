@@ -113,6 +113,7 @@ app.post("/users", async (request, response) => {
       lastName: request.body.lastName,
       email: request.body.email,
       password: hashedPwd,
+      role: "admin",
     });
     request.login(user, (err) => {
       if (err) {
@@ -133,7 +134,7 @@ app.post(
     // failureFlash: true,
   }),
   async (request, response) => {
-    console.log(request.user);
+    // console.log(request.user);
     response.redirect("/home");
   }
 );
@@ -143,15 +144,35 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     try {
-      const loggedInUser = request.user.id;
-      let user = await User.getUser(loggedInUser);
-      // console.log(request.user);
+      //User Details
+      const loggedInUserId = request.user.id;
+      let user = await User.getUser(loggedInUserId);
+      const userName = request.user.firstName + " " + request.user.lastName;
+
+      //Admin
+
+      //User Joined Sesseions
+      const sessions = await sessionPlayers.getSessionsJoined(loggedInUserId);
+      console.log("Sessions Joined", sessions);
+      const listOfSessionsJoined = [];
+      for (var i = 0; i < sessions.length; i++) {
+        listOfSessionsJoined.push(sessions[i].sessionId);
+      }
+      const sessionDetails = await Sessions.getSessionsById(
+        listOfSessionsJoined
+      );
+      console.log(sessionDetails);
+
+      //List Of Sports
       const SportsList = await Sports.getSportsList();
       // console.log(SportsList)
       if (request.accepts("html")) {
         response.render("home", {
-          title: "Sports Application",
+          title: "Sports Scheduler",
           SportsList,
+          userName,
+          user,
+          sessionDetails,
           csrfToken: request.csrfToken(),
         });
       } else {
@@ -180,7 +201,10 @@ app.get(
   "/createsport",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
+    const userName = request.user.firstName + " " + request.user.lastName;
     response.render("createsport", {
+      title: "Sports Scheduler",
+      userName,
       csrfToken: request.csrfToken(),
     });
   }
@@ -209,11 +233,14 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     // console.log("Sports Id ",request.params);
+    const userName = request.user.firstName + " " + request.user.lastName;
     const sportsId = request.params.id;
     const sportsname = await Sports.getSportsTitle(sportsId);
     const sessionsList = await Sessions.upComingSessions(sportsId);
     // console.log(sessionsList);
     response.render("session", {
+      userName,
+      title: "Sports Scheduler",
       sessionsList,
       sportsId,
       sportsname,

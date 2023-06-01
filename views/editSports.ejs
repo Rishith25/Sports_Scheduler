@@ -1,38 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sports Scheduler</title>
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/style.css" />
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="grid grid-cols-6">
-        <div class="col-start-3 col-span-2">
-            <h2 class="text-xl font-semibold text-gray-600">
-                Edit Sports
-            </h2>
-            <form action="/sports/<%= sportsId %>/editSport" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <div class="py-3">
-                    <label for="sportsname">What is the Sports Name?</label>
-                    <input type="text" name="sportsname" class="border border-gray-600 text-gray-900 rounded p-2 w-full"
-                        placeholder="Enter Sports Name" value="<%= sports.sportsname %>" required />
-                </div>
-                <div class="py-3">
-                    <button type="submit"
-                        class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded px-5 py-2">
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
+      <div class="col-start-3 col-span-2">
+        <h2 class="text-xl font-semibold text-gray-600">Edit Sports</h2>
+        <form action="/sports/<%= sportsId %>/editSport" method="post">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <div class="py-3">
+            <label for="sportsname">What is the Sports Name?</label>
+            <input
+              type="text"
+              name="sportsname"
+              class="border border-gray-600 text-gray-900 rounded p-2 w-full"
+              placeholder="Enter Sports Name"
+              value="<%= sports.sportsname %>"
+              required
+            />
+          </div>
+          <div class="py-3">
+            <button
+              type="submit"
+              class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded px-5 py-2"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

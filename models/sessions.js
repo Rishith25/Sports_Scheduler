@@ -139,6 +139,17 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async getSessionsById(ids) {
+      return this.findAll({
+        where: {
+          id: ids,
+          sessionDate: {
+            [Op.gt]: new Date(),
+          },
+        },
+      });
+    }
   }
   Sessions.init(
     {

@@ -60,6 +60,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async getSessionsJoined(userId) {
+      return this.findAll({
+        where: {
+          userId,
+        },
+      });
+    }
   }
   sessionPlayers.init(
     {
