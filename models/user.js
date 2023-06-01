@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, where } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -25,6 +25,19 @@ module.exports = (sequelize, DataTypes) => {
           id: creatorId,
         },
       });
+    }
+
+    static async updatePassword(newHashedPassword, userId) {
+      return this.update(
+        {
+          password: newHashedPassword,
+        },
+        {
+          where: {
+            id: userId,
+          },
+        }
+      );
     }
   }
 

@@ -150,6 +150,48 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async getSessionByUserId(creatorId) {
+      return this.findAll({
+        where: {
+          creatorId,
+          sessionDate: {
+            [Op.gt]: new Date(),
+          },
+        },
+      });
+    }
+
+    static async previousSessions(sportsId) {
+      return this.findAll({
+        where: {
+          sportsId,
+          sessionDate: {
+            [Op.lt]: new Date(),
+          },
+          isCancelled: false,
+        },
+      });
+    }
+
+    static async countSessionsAll(sportsId) {
+      return this.count({
+        where: {
+          sportsId,
+        },
+      });
+    }
+
+    static async countSession(sportsId, startDate, toDate) {
+      return this.count({
+        where: {
+          sportsId,
+          sessionDate: {
+            [Op.between]: [startDate, toDate],
+          },
+        },
+      });
+    }
   }
   Sessions.init(
     {

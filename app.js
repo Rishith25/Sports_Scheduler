@@ -162,6 +162,9 @@ app.get(
         listOfSessionsJoined
       );
       console.log(sessionDetails);
+      const UserSessionsCreated = await Sessions.getSessionByUserId(
+        loggedInUserId
+      );
 
       //List Of Sports
       const SportsList = await Sports.getSportsList();
@@ -172,6 +175,7 @@ app.get(
           SportsList,
           userName,
           user,
+          UserSessionsCreated,
           sessionDetails,
           csrfToken: request.csrfToken(),
         });
@@ -205,6 +209,88 @@ app.get(
     response.render("createsport", {
       title: "Sports Scheduler",
       userName,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.get(
+  "/reports",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const startDate = request.query.startDate;
+    const toDate = request.query.toDate;
+    const user = request.user;
+    const userName = request.user.firstName + " " + request.user.lastName;
+    const SportList = await Sports.getSportsList();
+    let sessionCount = [];
+    let sportsNames = [];
+    for (let i = 0; i < SportList.length; i++) {
+      const count = await Sessions.countSessionsAll(SportList[i].id);
+      sessionCount.push(count);
+      sportsNames.push(SportList[i].sportsname);
+    }
+    console.log(sessionCount);
+    console.log(sportsNames);
+
+    var sessionsPerSport = {};
+
+    for (let i = 0; i < SportList.length; i++) {
+      sessionsPerSport[sportsNames[i]] = sessionCount[i];
+    }
+
+    var list = Object.entries(sessionsPerSport); //sessionsPerSports in array format = [['Sport Name', 'count']...]
+
+    list.sort((first, second) => {
+      return second[1] - first[1];
+    });
+    console.log(list);
+
+    response.render("reports", {
+      title: "Sports Scheduler",
+      userName,
+      user,
+      list,
+      startDate,
+      toDate,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/reports",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const user = request.user;
+    const startDate = request.body.startDate;
+    const toDate = request.body.toDate;
+    const SportList = await Sports.getSportsList();
+    let sessionCount = [];
+    let sportsNames = [];
+    for (let i = 0; i < SportList.length; i++) {
+      const count = await Sessions.countSessions(
+        SportList[i].id,
+        startDate,
+        toDate
+      );
+      sessionCount.push(count);
+      sportsNames.push(SportList[i].sportsname);
+    }
+    var list = Object.entries(sessionsPerSport); //sessionsPerSports in array format = [['Sport Name', 'count']...]
+
+    list.sort((first, second) => {
+      return second[1] - first[1];
+    });
+    console.log(list);
+
+    response.render("reports", {
+      title: "Sports Scheduler",
+      userName,
+      user,
+      list,
+      startDate,
+      toDate,
       csrfToken: request.csrfToken(),
     });
   }
@@ -305,6 +391,24 @@ app.get(
 );
 
 app.get(
+  "/sports/:id/prev-sessions",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    console.log("Previous Sessions", request.params.id);
+    const sportsId = request.params.id;
+    const sportsname = await Sports.getSportsTitle(sportsId);
+    console.log(sportsname);
+    const previousSessions = await Sessions.previousSessions(sportsId);
+    response.render("previousSessions", {
+      previousSessions,
+      sportsId,
+      sportsname,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.get(
   "/sessions/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
@@ -320,9 +424,6 @@ app.get(
     const userPlayers = await sessionPlayers.getUserPlayer(userId, sessionId);
     // console.log(sessionPlayer)
 
-    //IsFull
-    const isFull = sessionPlayer.length >= sessionDetails.sessionCount;
-
     //IsParticipant
     const isParticipant = userPlayers.length > 0;
 
@@ -336,6 +437,10 @@ app.get(
     if (userId == sessionDetails.creatorId) {
       isCreator = true;
     }
+
+    //IsFull
+    const isFull = sessionDetails.sessionCount == 0;
+
     response.render("sessionDetails", {
       userName,
       userId,
@@ -374,7 +479,7 @@ app.post(
       }
 
       const SessionPlayersList = await sessionPlayers.getPlayersList(sessionId);
-      if (SessionPlayersList.length >= session.sessionCount) {
+      if (session.sessionCount == 0) {
         return response
           .status(400)
           .json({ message: "This session has reached the limit" });
@@ -588,6 +693,48 @@ app.delete(
     await Sports.deleteSport(sportsId);
     console.log("Sport Deleted");
     return response.redirect("/home");
+  }
+);
+
+app.get(
+  "/user/changePassword",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const user = request.user;
+    const userName = request.user.firstName + " " + request.user.lastName;
+    response.render("changePassword", {
+      title: "Sports Scheduler",
+      user,
+      userName,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/user/changePassword",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const oldPassword = request.body.oldPassword;
+    const newPassword = request.body.newPassword;
+    const user = request.user;
+    try {
+      const oldHashedPassword = user.password;
+      const validatePassword = await bcrypt.compare(
+        oldPassword,
+        oldHashedPassword
+      );
+      if (!validatePassword) {
+        console.log("Password Mismatch");
+      } else {
+        const newHashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        await User.updatePassword(newHashedPassword, user.id);
+      }
+      response.redirect("/user/changePassword");
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
   }
 );
 

@@ -54,7 +54,7 @@
         </div>
     </nav>
     <div class="grid grid-cols-6 pt-10">
-        <div class="col-start-3 col-span-2">
+        <div class="col-start-2 col-span-4">
             <div class="font-semibold text-gray-600">
                 <span>
                     <h1 class="text-3xl">
@@ -78,11 +78,6 @@
                 <table class="border border-gray-300 rounded">
                     sportsId : <%= sportsId %>
                         <br>
-                        <thead>
-                            <tr>
-                              <th class="p-4">Session Date</th>
-                            </tr>
-                          </thead>
                         <%= sessionsList.length %> Sessions Avaiable
                             <% for(var i=0 ; i < sessionsList.length ; i++){ %>
                                 <tr>
@@ -98,10 +93,11 @@
                 </table>
             </div>
             <div class="mt-4">
-                <a class="p-2 bg-green-500 text-white rounded font-medium mr-2"" href="/sports/<%= sportsId %>/new-session">Create a new session</a>
+                <a class="p-2 bg-green-500 text-white rounded font-medium mr-2" href="/sports/<%= sportsId %>/new-session">Create a new session</a>
             </div>
+            <br>
             <div>
-                <a class="text-blue-600 hover:underline" href="#">View Previous Sessions</a>
+                <a class="p-2 bg-green-500 text-white rounded font-medium mr-2" href="/sports/<%= sportsId %>/prev-sessions">View Previous Sessions</a>
             </div>
 
 </body>
