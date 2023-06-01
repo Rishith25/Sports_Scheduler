@@ -477,4 +477,91 @@ app.delete(
     }
   }
 );
+
+app.get(
+  "/sessions/:id/editsession",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const sessionId = request.params.id;
+    const session = await Sessions.getSessionDetails(sessionId);
+    const userId = request.user.id;
+    // const sportsId =
+    response.render("editSession", {
+      sessionId,
+      session,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.post(
+  "/sessions/:id/editsession",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const sessionId = request.params.id;
+      await Sessions.editSession({
+        sessionDate: request.body.sessionDate,
+        sessionVenue: request.body.sessionVenue,
+        sessionPlayers: request.body.sessionPlayers.split(","),
+        sessionCount: request.body.sessionCount,
+        sessionId,
+      });
+      return response.redirect(`/sessions/${sessionId}`);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.post(
+  "/sports/:id/editSport",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const sportsId = request.params.id;
+      console.log("Editing the Sports");
+      const sports = await Sports.getSports(sportsId);
+      await Sports.UpdateSport({
+        sportsname: request.body.sportsname,
+        sportsId,
+      });
+      console.log("Sports Edited Successfully");
+      return response.redirect(`/sports/${sportsId}`);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.get(
+  "/sports/:id/editSport",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const sportsId = request.params.id;
+    const sports = await Sports.getSports(sportsId);
+    response.render("editSports", {
+      sportsId,
+      sports,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
+app.delete(
+  "/sports/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const sportsId = request.params.id;
+    console.log("First deleteing the sessions with the sports id", sportsId);
+    await Sessions.deleteSessions(sportsId);
+    console.log("Sessions Deleted related to the sportsId", sportsId);
+    await Sports.deleteSport(sportsId);
+    console.log("Sport Deleted");
+    return response.redirect("/home");
+  }
+);
+
 module.exports = app;

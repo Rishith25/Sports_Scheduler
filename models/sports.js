@@ -26,6 +26,35 @@ module.exports = (sequelize, DataTypes) => {
       const Sport = await this.findOne({ where: { id: sportsId } });
       return Sport.sportsname;
     }
+
+    static async getSports(sportsId) {
+      return this.findAll({
+        where: {
+          id: sportsId,
+        },
+      });
+    }
+
+    static async UpdateSport({ sportsname, sportsId }) {
+      return this.update(
+        {
+          sportsname: sportsname,
+        },
+        {
+          where: {
+            id: sportsId,
+          },
+        }
+      );
+    }
+
+    static async deleteSport(sportsId) {
+      return this.destroy({
+        where: {
+          id: sportsId,
+        },
+      });
+    }
   }
   Sports.init(
     {

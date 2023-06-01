@@ -109,6 +109,36 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+
+    static async editSession({
+      sessionDate,
+      sessionVenue,
+      sessionPlayers,
+      sessionCount,
+      sessionId,
+    }) {
+      return this.update(
+        {
+          sessionDate: sessionDate,
+          sessionVenue: sessionVenue,
+          sessionPlayers: sessionPlayers,
+          sessionCount: sessionCount,
+        },
+        {
+          where: {
+            id: sessionId,
+          },
+        }
+      );
+    }
+
+    static async deleteSessions(sportsId) {
+      return this.destroy({
+        where: {
+          sportsId,
+        },
+      });
+    }
   }
   Sessions.init(
     {

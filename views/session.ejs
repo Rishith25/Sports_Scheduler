@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,32 +9,70 @@
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/style.css" />
+    <script>
+        var token = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content");
+
+        function deleteSport(id) {
+            fetch(`/sports/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "_csrf": token,
+                })
+            })
+                .then((res) => {
+                    if (res.ok) {
+                        window.location.assign("/home");
+                    }
+                })
+                .catch((err) => {
+                    console.error(err)
+                })
+        }
+    </script>
 </head>
+
 <body>
     <div class="grid grid-cols-6 pt-10">
         <div class="col-start-3 col-span-2">
-            <div class="text-3xl font-semibold text-gray-600 p-4"><%= sportsname %></div>
+            <div class="text-3xl font-semibold text-gray-600 p-4">
+                <%= sportsname %>
+            </div>
             <hr>
             <hr>
+            <span>
+                <a href="/sports/<%= sportsId %>/editSport" class="ml-6 text-green-600 underline">
+                    <span> Edit Sport </span></a>
+            </span>
+            <span>
+                <a href="/home" class="ml-6 text-green-600 underline" onclick="deleteSport(<%= sportsId %>)">Delete
+                    Sport
+                </a></span>
             <div>
                 <h1>Upcoming Sessions</h1>
                 <table>
                     sportsId : <%= sportsId %>
-                    <br>
-                    <%= sessionsList.length %> Sessions Avaiable
-                    <% for(var i = 0 ; i < sessionsList.length ; i++){ %>
-                        <tr>
-                            <td>
-                                <div class="p-4">
-                                    <a href="/sessions/<%= sessionsList[i].id %>">
-                                    <%= sessionsList[i].sessionDate.toString().substring(0,21) %></a>
-                                </div>
-                            </td>
-                        </tr>                        
-                    <% } %>
+                        <br>
+                        <%= sessionsList.length %> Sessions Avaiable
+                            <% for(var i=0 ; i < sessionsList.length ; i++){ %>
+                                <tr>
+                                    <td>
+                                        <div class="p-4">
+                                            <a href="/sessions/<%= sessionsList[i].id %>">
+                                                <%= sessionsList[i].sessionDate.toString().substring(0,21) %>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% } %>
                 </table>
             </div>
             <a class="p-2" href="/sports/<%= sportsId %>/new-session">Create a new session</a>
             <a href="#">View Previous Sessions</a>
 </body>
-</html> 
+
+</html>
