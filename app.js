@@ -19,6 +19,7 @@ const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
+const { error } = require("console");
 
 app.use(flash());
 
@@ -42,7 +43,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(function (request, response, next) {
+app.use(async function (request, response, next) {
   response.locals.messages = request.flash();
   next();
 });
@@ -100,9 +101,6 @@ app.get("/signup", (request, response) => {
 });
 
 app.get("/login", async (request, response) => {
-  // if (request.isAuthenticated()) {
-  //   return response.redirect("/todos");
-  // }
   response.render("login", {
     title: "Login",
     csrfToken: request.csrfToken(),
@@ -215,8 +213,11 @@ app.get(
       let user = await User.getUser(loggedInUserId);
       const userName = request.user.firstName + " " + request.user.lastName;
 
-      //Admin
-
+      //isAdmin
+      let isAdmin = false;
+      if (user.role == "admin") {
+        isAdmin = true;
+      }
       //User Joined Sesseions
       const sessions = await sessionPlayers.getSessionsJoined(loggedInUserId);
       // console.log("Sessions Joined", sessions);
@@ -241,6 +242,7 @@ app.get(
           SportsList,
           userName,
           user,
+          isAdmin,
           UserSessionsCreated,
           sessionDetails,
           csrfToken: request.csrfToken(),
@@ -461,10 +463,12 @@ app.get(
   "/createsport",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
+    const user = request.user;
     const userName = request.user.firstName + " " + request.user.lastName;
     response.render("createsport", {
       title: "Sports Scheduler",
       userName,
+      user,
       csrfToken: request.csrfToken(),
     });
   }
@@ -513,12 +517,14 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     // console.log("Sports Id ",request.params);
+    const user = request.user;
     const userName = request.user.firstName + " " + request.user.lastName;
     const sportsId = request.params.id;
     const sportsname = await Sports.getSportsTitle(sportsId);
     const sessionsList = await Sessions.upComingSessions(sportsId);
     // console.log(sessionsList);
     response.render("session", {
+      user,
       userName,
       title: "Sports Scheduler",
       sessionsList,
@@ -537,23 +543,47 @@ app.post(
     // console.log("Creating a session", request.body)
     const sportsId = request.body.sportsId;
     // console.log("Sports Id", sportsId);
-    const sessionDate = new Date(request.body.sessionDate);
-    const formattedSessionDate = sessionDate.toISOString().slice(0, 16);
+    // const sessionDate = new Date(request.body.sessionDate);
+    // const formattedSessionDate = sessionDate.toISOString().slice(0, 16);
     const user = request.user;
     // console.log("Creator name", request.user)
     try {
+      const userId = request.body.creatorId;
+      const userName = request.user.firstName + " " + request.user.lastName;
+
+      //allow to Create
+      let allowUser = true;
+      let userJoined = null;
+      const joinedSessions = await sessionPlayers.getSessionsJoined(userId);
+      for (var i = 0; i < joinedSessions.length; i++) {
+        userJoined = await Sessions.sessionByIdDate(
+          joinedSessions[i].sessionId,
+          request.body.sessionDate
+        );
+        if (userJoined === null) {
+          allowUser = true;
+        } else {
+          allowUser = false;
+          break;
+        }
+      }
+      if (allowUser == false) {
+        request.flash(
+          "error",
+          "User can not create this session as you are having another session scheduled at the same time"
+        );
+        return response.redirect(`/sports/${sportsId}`);
+      }
+
       const session = await Sessions.createSession({
-        sessionDate: formattedSessionDate,
+        sessionDate: request.body.sessionDate,
         sessionVenue: request.body.sessionVenue,
         sessionPlayers: request.body.sessionPlayers.split(","),
         sessionCount: request.body.sessionCount,
         sportsId: request.body.sportsId,
         creatorId: request.body.creatorId,
       });
-
       const sessionId = session.id;
-      const userId = request.body.creatorId;
-      const userName = request.user.firstName + " " + request.user.lastName;
       sessionPlayers.joinCreator({
         userId,
         sessionId,
@@ -561,8 +591,25 @@ app.post(
       });
       return response.redirect(`/sessions/${session.id}`);
     } catch (error) {
-      console.log(error);
-      return response.status(422).json(error);
+      if (error.name == "SequelizeValidationError") {
+        const errMsg = error.errors.map((error) => error.message);
+        console.log("flash errors", errMsg);
+        errMsg.forEach((message) => {
+          if (message == "Validation notEmpty on sessionDate failed") {
+            request.flash("error", "Play Date cannot be empty");
+          }
+          if (message == "Validation notEmpty on sessionVenue failed") {
+            request.flash("error", "Venue cannot be empty");
+          }
+          if (message == "Validation notEmpty on sessionCount failed") {
+            request.flash("error", "Number of players nedded cannot be empty");
+          }
+        });
+        response.redirect(`/sports/${sportsId}/new-session`);
+      } else {
+        console.log(error);
+        return response.status(422).json(error);
+      }
     }
   }
 );
@@ -571,13 +618,18 @@ app.get(
   "/sports/:id/new-session",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const user = request.user;
+    const userName = request.user.firstName + " " + request.user.lastName;
     const sportsId = request.params.id;
     const sportsname = await Sports.getSportsTitle(sportsId);
     console.log(sportsname);
     const creatorId = request.user.id;
     response.render("createSession", {
-      sportsId,
+      title: "Sports Scheduler",
+      user,
+      userName,
       sportsname,
+      sportsId,
       creatorId,
       csrfToken: request.csrfToken(),
     });
@@ -588,12 +640,17 @@ app.get(
   "/sports/:id/prev-sessions",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const user = request.user;
+    const userName = request.user.firstName + " " + request.user.lastName;
     console.log("Previous Sessions", request.params.id);
     const sportsId = request.params.id;
     const sportsname = await Sports.getSportsTitle(sportsId);
     console.log(sportsname);
     const previousSessions = await Sessions.previousSessions(sportsId);
     response.render("previousSessions", {
+      title: "Sports Scheduler",
+      user,
+      userName,
       previousSessions,
       sportsId,
       sportsname,
@@ -606,6 +663,7 @@ app.get(
   "/sessions/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const user = request.user;
     const sessionId = request.params.id;
     // console.log(sessionId);
     const sessionDetails = await Sessions.getSessionDetails(sessionId);
@@ -653,6 +711,8 @@ app.get(
     const isFull = sessionDetails.sessionCount == 0;
 
     response.render("sessionDetails", {
+      title: "Sports Scheduler",
+      user,
       userName,
       userId,
       sessionId,
@@ -748,8 +808,13 @@ app.get(
   "/sessions/:id/cancel",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const user = request.user;
+    const userName = request.user.firstName + " " + request.user.lastName;
     const sessionId = request.params.id;
     response.render("cancelSession", {
+      title: "Sports Scheduler",
+      user,
+      userName,
       sessionId,
       csrfToken: request.csrfToken(),
     });
@@ -827,11 +892,16 @@ app.get(
   "/sessions/:id/editsession",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const user = request.user;
+    const userName = request.user.firstName + " " + request.user.lastName;
     const sessionId = request.params.id;
     const session = await Sessions.getSessionDetails(sessionId);
     const userId = request.user.id;
     // const sportsId =
     response.render("editSession", {
+      title: "Sports Scheduler",
+      user,
+      userName,
       sessionId,
       session,
       csrfToken: request.csrfToken(),
@@ -855,7 +925,25 @@ app.post(
       return response.redirect(`/sessions/${sessionId}`);
     } catch (error) {
       console.log(error);
-      return response.status(422).json(error);
+      if (error.name == "SequelizeValidationError") {
+        const errMsg = error.errors.map((error) => error.message);
+        console.log("flash errors", errMsg);
+        errMsg.forEach((message) => {
+          if (message == "Validation notEmpty on sessionDate failed") {
+            request.flash("error", "Play Date cannot be empty");
+          }
+          if (message == "Validation notEmpty on sessionVenue failed") {
+            request.flash("error", "Venue cannot be empty");
+          }
+          if (message == "Validation notEmpty on sessionCount failed") {
+            request.flash("error", "Number of players nedded cannot be empty");
+          }
+        });
+        response.redirect(`/sports/${sportsId}/new-session`);
+      } else {
+        console.log(error);
+        return response.status(422).json(error);
+      }
     }
   }
 );
@@ -864,8 +952,8 @@ app.post(
   "/sports/:id/editSport",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const sportsId = request.params.id;
     try {
-      const sportsId = request.params.id;
       console.log("Editing the Sports");
       const sports = await Sports.getSports(sportsId);
       await Sports.UpdateSport({
@@ -876,7 +964,26 @@ app.post(
       return response.redirect(`/sports/${sportsId}`);
     } catch (error) {
       console.log(error);
-      return response.status(422).json(error);
+      if (error.name == "SequelizeValidationError") {
+        const errMsg = error.errors.map((error) => error.message);
+        errMsg.forEach((message) => {
+          if (message == "Validation notEmpty on sportsname failed") {
+            request.flash("error", "Sport Name cannot be empty");
+          }
+        });
+        return response.redirect(`/sports/${sportsId}/editSport`);
+      } else if (error.name == "SequelizeUniqueConstraintError") {
+        const errMsg = error.errors.map((error) => error.message);
+        console.log(errMsg);
+        errMsg.forEach((message) => {
+          if (message == "sportsname must be unique") {
+            request.flash("error", "Sport already created");
+          }
+        });
+        return response.redirect(`/sports/${sportsId}/editSport`);
+      } else {
+        return response.status(422).json(error);
+      }
     }
   }
 );
@@ -885,9 +992,14 @@ app.get(
   "/sports/:id/editSport",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const user = request.user;
+    const userName = request.user.firstName + " " + request.user.lastName;
     const sportsId = request.params.id;
     const sports = await Sports.getSports(sportsId);
     response.render("editSports", {
+      title: "Sports Scheduler",
+      user,
+      userName,
       sportsId,
       sports,
       csrfToken: request.csrfToken(),
@@ -939,12 +1051,20 @@ app.post(
       );
       if (!validatePassword) {
         console.log("Password Mismatch");
+        request.flash("error", "Old Password is wrong");
+        return response.redirect("/user/changePassword");
       } else {
         const newHashedPassword = await bcrypt.hash(newPassword, saltRounds);
-        await User.updatePassword(newHashedPassword, user.id);
+
+        if (newPassword == oldPassword) {
+          request.flash("error", "Old and New Passwords are same.");
+          return response.redirect("/user/changePassword");
+        } else {
+          await User.updatePassword(newHashedPassword, user.id);
+          request.flash("success", "Password changed successfully");
+          response.redirect("/user/changePassword");
+        }
       }
-      request.flash("success", "Password changed successfully");
-      response.redirect("/user/changePassword");
     } catch (error) {
       console.log(error);
       request.flash("error", "An error occurred while changing the password");

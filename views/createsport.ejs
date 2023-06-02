@@ -35,38 +35,43 @@
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
         <div class="container mx-auto py-8">
-          <h4 class="text-2xl font-semibold text-gray p-4 font-serif">
-            Create A New Sport
-          </h4>
-          <form action="/sports" method="post">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            <div class="flex-gap-2 py-4 px-2 items-center">
-              <div class="flex-auto">
-                <input
-                  type="text"
-                  name="sportsname"
-                  placeholder="Enter Sport Name"
-                  class="border border-gray-300 rounded-lg text-gray-900 w-full p-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                />
+          <div
+            class="col-start-3 col-span-2 bg-white border-gray-300 border mr-4 rounded"
+            style="padding: 20px"
+          >
+            <h4 class="text-2xl font-semibold text-gray p-4 font-serif">
+              Create A New Sport
+            </h4>
+            <form action="/sports" method="post">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <div class="flex-gap-2 py-4 px-2 items-center">
+                <div class="flex-auto">
+                  <input
+                    type="text"
+                    name="sportsname"
+                    placeholder="Enter Sport Name"
+                    class="border border-gray-300 rounded-lg text-gray-900 w-full p-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
+                </div>
+                <br />
+                <div class="flex-none">
+                  <button
+                    type="submit"
+                    class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    Submit
+                  </button>
+                </div>
               </div>
+            </form>
+            <% if(messages && messages.error && messages.error.length> 0) { %>
+            <% for(var i=0; i < messages.error.length; i++) { %>
+            <li>
+              <%= messages.error[i] %>
               <br />
-              <div class="flex-none">
-                <button
-                  type="submit"
-                  class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  Submit
-                </button>
-              </div>
-            </div>
-          </form>
-          <% if(messages && messages.error && messages.error.length> 0) { %> <%
-          for(var i=0; i < messages.error.length; i++) { %>
-          <li>
-            <%= messages.error[i] %>
-            <br />
-          </li>
-          <% } %> <% } %>
+            </li>
+            <% } %> <% } %>
+          </div>
         </div>
       </div>
     </div>

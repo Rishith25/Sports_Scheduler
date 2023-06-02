@@ -102,6 +102,29 @@
   </head>
 
   <body>
+    <nav class="bg-gray-800">
+      <div
+        class="container mx-auto px-4 py-2 flex justify-between items-center"
+      >
+        <div class="text-white text-lg font-semibold">
+          <%= title %>
+          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
+            <a href="/home">Home</a>
+          </span>
+          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
+            <a href="/user/changePassword">Change Password</a>
+          </span>
+        </div>
+        <div>
+          <span class="text-gray-300 mr-4">Welcome <%= userName %></span>
+          <a
+            href="/signout"
+            class="inline-block px-4 py-2 text-white bg-red-600 rounded-md font-medium"
+            >Sign Out</a
+          >
+        </div>
+      </div>
+    </nav>
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
         <h2 class="text-3xl font-semibold text-gray-600">
@@ -207,7 +230,7 @@
         <p class="mt-4">No Players have joined this session.</p>
         <% } %> <% if ((isParticipant === false && isFull === false &&
         isPrevious === false && sessionDetails.isCancelled === false) || (isFull
-        === false && isPrevious === false)) { %> <% if (allowUser === true) { %>
+        === false && isPrevious === false)) { %> <% if (!isParticipant  &&  allowUser === true) { %>
         <button
           class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           type="submit"
@@ -215,7 +238,7 @@
         >
           Join Session
         </button>
-        <% } else if (allowUser === false) { %>
+        <% } else if (!isParticipant && allowUser === false) { %>
         <p class="mt-4">You are not allowed to join in this Session as you have a Sport session scheduled at the same date and time</p>
         <tr>
           <td>

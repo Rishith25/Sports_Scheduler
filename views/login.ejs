@@ -10,47 +10,53 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
-  <body>
-    <div class="grid grid-cols-6">
-      <div class="col-start-3 col-span-2">
-        <%- include('header') %>
-        <a
-          href="/"
-          class="bg-blue-600 text-white px-3 py-1.5 rounded font-medium mr-4 mb"
-          >Home Page</a
-        >
-        <p class="py-4">
-          Don't have an account?
-          <a href="/signup" class="text-green-600">Sign-Up</a>
-        </p>
-        <h6 class="py-4">Login to your account</h6>
-        <form action="/session" method="post">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          <div class="py-3">
-            <label for="firstName">Email:</label>
-            <input
-              type="email"
-              name="email"
-              class="border border-gray-300 text-gray-900 rounded p-2 w-full"
-            />
-          </div>
-          <div class="py-3">
-            <label for="firstName">Password:</label>
-            <input
-              type="password"
-              name="password"
-              class="border border-gray-300 text-gray-900 rounded p-2 w-full"
-            />
-          </div>
-          <div class="py-3">
-            <button
-              type="submit"
-              class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"
+  <body style="background-color: #f2f2f2">
+    <div class="container mx-auto py-8">
+      <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+          <div
+            class="col-start-3 col-span-2 bg-white border-gray-300 border mr-4 rounded p-5"
+          >
+            <%- include('header') %>
+            <a
+              href="/"
+              class="text-green-600"
+              >Home Page</a
             >
-              Sign in
-            </button>
+            <p class="py-4">
+              Don't have an account?
+              <a href="/signup" class="text-green-600">Sign-Up</a>
+            </p>
+            <h6 class="py-4">Log-in to your account</h6>
+            <form action="/session" method="post">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <div class="py-3">
+                <label for="firstName">Email:</label>
+                <input
+                  type="email"
+                  name="email"
+                  class="border border-gray-300 text-gray-900 rounded p-2 w-full"
+                />
+              </div>
+              <div class="py-3">
+                <label for="firstName">Password:</label>
+                <input
+                  type="password"
+                  name="password"
+                  class="border border-gray-300 text-gray-900 rounded p-2 w-full"
+                />
+              </div>
+              <div class="py-3">
+                <button
+                  type="submit"
+                  class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"
+                >
+                  Sign in
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </body>

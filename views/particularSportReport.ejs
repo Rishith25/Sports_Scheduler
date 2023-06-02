@@ -53,11 +53,11 @@
                 '2-digit', minute: '2-digit', hour12: true}) %>
               </p>
               <% if(upComingSessions[i].sessionCount == 1) { %>
-              <p class="text-sm text-gray-600">Last Slot</p>
+              <p class="text-sm font-semibold text-red-600">Last Slot</p>
               <% } else if(upComingSessions[i].sessionCount == 0) { %>
-              <p class="text-sm text-gray-600">Fully Booked</p>
+              <p class="text-sm text-red-600 font-semibold">Fully Booked</p>
               <% } else { %>
-              <p class="text-sm text-gray-600">
+              <p class="text-sm text-green-600 font-semibold">
                 <%= upComingSessions[i].sessionCount + " slots" %>
               </p>
               <% } %> <% if(upComingSessions[i].isCancelled) { %>
