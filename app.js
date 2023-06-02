@@ -11,12 +11,16 @@ var cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
 const path = require("path");
 const { Op } = require("sequelize");
+const flash = require("connect-flash");
 
+app.set("views", path.join(__dirname, "views"));
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
+
+app.use(flash());
 
 const saltRounds = 10;
 app.set("view engine", "ejs");
@@ -37,6 +41,11 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 
 passport.use(
   new LocalStrategy(
@@ -84,9 +93,6 @@ app.get("/", async (request, response) => {
 });
 
 app.get("/signup", (request, response) => {
-  // if (request.isAuthenticated()) {
-  //   return response.redirect("/todos");
-  // }
   response.render("signup", {
     title: "Signup",
     csrfToken: request.csrfToken(),
@@ -281,18 +287,23 @@ app.post(
         toDate
       );
       sessionCount.push(count);
-      sportsNames.push(SportList[i].sportsname);
+      sportsNames.push({
+        sportsname: SportList[i].sportsname,
+        sportsId: SportList[i].id,
+        sessions: count,
+      });
     }
+    console.log(sportsNames);
     var sessionsPerSport = {};
 
     for (let i = 0; i < SportList.length; i++) {
-      sessionsPerSport[sportsNames[i]] = sessionCount[i];
+      sessionsPerSport[sportsNames[i][0]] = sessionCount[i];
     }
 
-    var list = Object.entries(sessionsPerSport); //sessionsPerSports in array format = [['Sport Name', 'count']...]
+    var list = Object.entries(sportsNames); //sessionsPerSports in array format = [['Sport Name', 'count']...]
 
     list.sort((first, second) => {
-      return second[1] - first[1];
+      return second[1].sessions - first[1].sessions;
     });
     console.log(list);
 
@@ -309,13 +320,13 @@ app.post(
 );
 
 app.get(
-  "/sports/:id/reportDetails",
+  "/sports/:id/reportDetails//",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const userName = request.user.firstName + " " + request.user.lastName;
     const user = request.user;
     const sportsId = request.params.id;
-    console.log(sportsId);
+
     const sportsname = await Sports.getSportsTitle(sportsId);
     const upComingSessions = await Sessions.upComingSessions(sportsId);
     const previousSessions = await Sessions.previousSessions(sportsId);
@@ -342,6 +353,33 @@ app.get(
     const userName = request.user.firstName + " " + request.user.lastName;
     const user = request.user;
     const sportsId = request.params.id;
+    const startDate = request.params.startDate;
+    const toDate = request.params.toDate;
+    const sportsname = await Sports.getSportsTitle(sportsId);
+    const upComingSessions = await Sessions.SessionsByDate(
+      sportsId,
+      startDate,
+      toDate
+    );
+    console.log(upComingSessions);
+    const cancelledSessions = await Sessions.cancelledSessionsByDate(
+      sportsId,
+      startDate,
+      toDate
+    );
+
+    response.render("particularSportReport", {
+      title: "Sports Scheduler",
+      user,
+      userName,
+      sportsId,
+      sportsname,
+      startDate,
+      toDate,
+      upComingSessions,
+      cancelledSessions,
+      csrfToken: request.csrfToken(),
+    });
   }
 );
 
@@ -487,6 +525,23 @@ app.get(
       isCreator = true;
     }
 
+    //userWarning
+    let allowUser = true;
+    let userJoined = null;
+    const joinedSessions = await sessionPlayers.getSessionsJoined(userId);
+    for (var i = 0; i < joinedSessions.length; i++) {
+      userJoined = await Sessions.sessionByIdDate(
+        joinedSessions[i].sessionId,
+        sessionDetails.sessionDate
+      );
+      if (userJoined === null) {
+        allowUser = true;
+      } else {
+        allowUser = false;
+        break;
+      }
+    }
+
     //IsFull
     const isFull = sessionDetails.sessionCount == 0;
 
@@ -503,6 +558,8 @@ app.get(
       isParticipant,
       isFull,
       creator,
+      userJoined,
+      allowUser,
       csrfToken: request.csrfToken(),
     });
   }

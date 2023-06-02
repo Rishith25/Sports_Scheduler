@@ -27,6 +27,14 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static async getCreatorNames({ creatorId }) {
+      return this.findAll({
+        where: {
+          id: creatorId,
+        },
+      });
+    }
+
     static async updatePassword(newHashedPassword, userId) {
       return this.update(
         {

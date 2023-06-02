@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
-  <body>
+  <body class="bg-gray-200">
     <nav class="bg-gray-800">
       <div
         class="container mx-auto px-4 py-2 flex justify-between items-center"
@@ -18,6 +18,9 @@
           <%= title %>
           <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
             <a href="/home">Home</a>
+          </span>
+          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
+            <a href="/user/changePassword">Change Password</a>
           </span>
         </div>
 
@@ -31,90 +34,101 @@
         </div>
       </div>
     </nav>
-    <div class="grid grid-cols-6">
-      <div class="col-start-2 col-span-4">
-        <div class="flex justify-center">
-          <div class="w-full md:w-2/3 lg:w-1/2">
-            <div class="p-4">
-              <form action="/reports" method="post" class="w-full max-w-sm">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                <div class="mb-4 flex justify-between">
-                  <div class="p-2">
-                    <label for="startDate" class="block mb-2 text-center"
-                      >From</label
-                    >
-                    <input
-                      type="date"
-                      name="startDate"
-                      id="startDate"
-                      class="border rounded p-2 w-full"
-                    />
+    <div class="container mx-auto py-8">
+      <div class="grid grid-cols-6">
+        <div class="col-start-2 col-span-4 bg-white rounded-lg shadow-md p-8">
+          <div class="flex justify-center">
+            <div class="w-full md:w-2/3 lg:w-1/2">
+              <div>
+                <h3 class="text-2xl font-semibold mb-4 flex justify-center">
+                  Reports
+                </h3>
+              </div>
+              <div class="p-4">
+                <form action="/reports" method="post" class="w-full max-w-sm">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <div class="mb-4 flex justify-between">
+                    <div class="p-2">
+                      <label for="startDate" class="block mb-2 text-center"
+                        >From</label
+                      >
+                      <input
+                        type="date"
+                        name="startDate"
+                        id="startDate"
+                        class="border rounded p-2 w-full"
+                      />
+                    </div>
+                    <div class="p-2">
+                      <label for="toDate" class="block mb-2 text-center"
+                        >To</label
+                      >
+                      <input
+                        type="date"
+                        name="toDate"
+                        id="toDate"
+                        class="border rounded p-2 w-full"
+                      />
+                    </div>
                   </div>
-                  <div class="p-2">
-                    <label for="toDate" class="block mb-2 text-center"
-                      >To</label
+                  <div class="flex justify-center">
+                    <button
+                      type="submit"
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     >
-                    <input
-                      type="date"
-                      name="toDate"
-                      id="toDate"
-                      class="border rounded p-2 w-full"
-                    />
+                      Submit
+                    </button>
                   </div>
-                </div>
-                <div class="flex justify-center">
-                  <button
-                    type="submit"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
+                </form>
+              </div>
 
-            <div class="p-4">
-              <table class="w-full border border-gray-300">
-                <thead>
-                  <tr>
-                    <th
-                      class="p-3 text-center font-bold border border-gray-300 rounded-md"
+              <div class="p-4">
+                <table class="w-full border border-gray-300">
+                  <thead>
+                    <tr>
+                      <th
+                        class="p-3 text-center font-bold border border-gray-300 rounded-md"
+                      >
+                        Rank
+                      </th>
+                      <th
+                        class="p-3 text-center font-bold border border-gray-300 rounded-md"
+                      >
+                        Sport
+                      </th>
+                      <th
+                        class="p-3 text-center font-bold border border-gray-300 rounded-md"
+                      >
+                        No of Sessions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <h5
+                      class="text-xl font-bold text-gray-600 pb-5 text-center"
                     >
-                      Rank
-                    </th>
-                    <th
-                      class="p-3 text-center font-bold border border-gray-300 rounded-md"
-                    >
-                      Sport
-                    </th>
-                    <th
-                      class="p-3 text-center font-bold border border-gray-300 rounded-md"
-                    >
-                      No of Sessions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <h5 class="text-xl font-bold text-gray-600 pb-5 text-center">
-                    Rank of Sports according to number of Sessions
-                  </h5>
-                  <% for(var i = 0; i < list.length; i++) { %>
-                  <tr>
-                    <td class="text-center border border-gray-300">
-                      <%= i+1 %>
-                    </td>
-                    <td class="text-center border font-bold border-gray-300"><a href="/sports/<%= list[i][1].sportsId %>/reportDetails">
-                        <%= list[i][1].sportsname %>
-                    </a>
-                      
-                    </td>
-                    <td class="text-center border border-gray-300">
-                      <%= list[i][1].sessions %>
-                    </td>
-                  </tr>
-                  <% } %>
-                </tbody>
-              </table>
+                      Rank of Sports according to number of Sessions
+                    </h5>
+                    <% for(var i = 0; i < list.length; i++) { %>
+                    <tr>
+                      <td class="text-center border border-gray-300">
+                        <%= i+1 %>
+                      </td>
+                      <td class="text-center border font-bold border-gray-300">
+                        <a
+                          href="/sports/<%= list[i][1].sportsId %>/reportDetails/<%= startDate %>/<%= toDate %>"
+                        >
+                          <%= list[i][1].sportsname %>
+                        </a>
+                      </td>
+                      <td class="text-center border border-gray-300">
+                        <%= list[i][1].sessions %>
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

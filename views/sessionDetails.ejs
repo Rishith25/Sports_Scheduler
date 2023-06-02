@@ -205,7 +205,9 @@
         </ul>
         <% } else { %>
         <p class="mt-4">No Players have joined this session.</p>
-        <% } %> <% if(!isParticipant && !isFull & !isPrevious) { %>
+        <% } %> <% if ((isParticipant === false && isFull === false &&
+        isPrevious === false && sessionDetails.isCancelled === false) || (isFull
+        === false && isPrevious === false)) { %> <% if (allowUser === true) { %>
         <button
           class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           type="submit"
@@ -213,7 +215,18 @@
         >
           Join Session
         </button>
-        <% } else if(isParticipant) { %>
+        <% } else if (allowUser === false) { %>
+        <p class="mt-4">You are not allowed to join in this Session as you have a Sport session scheduled at the same date and time</p>
+        <tr>
+          <td>
+              <div class="p-4">
+                  <a href="/sessions/<%= userJoined.id %>" class="text-blue-600 hover:underline">
+                      <%= userJoined.sessionDate.toString().substring(0,21) %>
+                  </a>
+              </div>
+          </td>
+      </tr>
+        <% } %> <% } %> <% if(isParticipant) { %>
         <p class="mt-4">You are already a Participant in this Session</p>
         <button
           class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
@@ -222,7 +235,7 @@
         >
           Leave Session
         </button>
-        <% } else if (isFull) { %>
+        <% } else if(isFull) { %>
         <p class="mt-4">This session is Full</p>
         <% } %>
       </div>

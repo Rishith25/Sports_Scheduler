@@ -73,6 +73,33 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static async SessionsByDate(sportsId, startDate, toDate) {
+      return this.findAll({
+        where: {
+          sportsId,
+          sessionDate: {
+            [Op.and]: {
+              [Op.gt]: startDate,
+              [Op.lt]: toDate,
+            },
+          },
+          isCancelled: false,
+        },
+      });
+    }
+
+    static async cancelledSessionsByDate(sportsId, startDate, toDate) {
+      return this.findAll({
+        where: {
+          sportsId,
+          sessionDate: {
+            [Op.between]: [startDate, toDate],
+          },
+          isCancelled: true,
+        },
+      });
+    }
+
     static async getSessionIds(sportsId) {
       return this.findAll({
         where: { sportsId },
@@ -198,6 +225,16 @@ module.exports = (sequelize, DataTypes) => {
           sessionDate: {
             [Op.between]: [startDate, toDate],
           },
+        },
+      });
+    }
+
+    static async sessionByIdDate(id, sessionDate) {
+      return this.findOne({
+        where: {
+          id,
+          sessionDate,
+          isCancelled: false,
         },
       });
     }
