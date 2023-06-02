@@ -345,6 +345,10 @@ app.post(
         request.flash("error", "Start Date Can not be empty");
         return response.redirect("/reports");
       }
+      if (startDate > toDate) {
+        request.flash("error", "Start Date is greater than To Date");
+        return response.redirect("/reports");
+      }
       const SportList = await Sports.getSportsList();
       let sessionCount = [];
       let sportsNames = [];
