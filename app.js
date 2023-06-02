@@ -170,6 +170,7 @@ app.post("/users", async (request, response) => {
     return response.redirect("/signup");
   }
   //Hash password using bcrypt
+
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
   //Have to create the uer here
   try {
