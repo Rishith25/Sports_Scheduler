@@ -179,7 +179,7 @@ app.post("/users", async (request, response) => {
       lastName: request.body.lastName,
       email: request.body.email,
       password: hashedPwd,
-      role: "admin",
+      role: "user",
     });
     request.login(user, (err) => {
       if (err) {
