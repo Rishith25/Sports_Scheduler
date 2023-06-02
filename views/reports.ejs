@@ -36,25 +36,31 @@
         <div class="flex justify-center">
           <div class="w-full md:w-2/3 lg:w-1/2">
             <div class="p-4">
-              <form action="/reports" method="post">
+              <form action="/reports" method="post" class="w-full max-w-sm">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                <div class="mb-4">
-                  <label for="startDate" class="block mb-2">From</label>
-                  <input
-                    type="datetime-local"
-                    name="startDate"
-                    id="startDate"
-                    class="border rounded p-2"
-                  />
-                </div>
-                <div class="mb-4">
-                  <label for="toDate" class="block mb-2">To</label>
-                  <input
-                    type="datetime-local"
-                    name="toDate"
-                    id="toDate"
-                    class="border rounded p-2"
-                  />
+                <div class="mb-4 flex justify-between">
+                  <div class="p-2">
+                    <label for="startDate" class="block mb-2 text-center"
+                      >From</label
+                    >
+                    <input
+                      type="date"
+                      name="startDate"
+                      id="startDate"
+                      class="border rounded p-2 w-full"
+                    />
+                  </div>
+                  <div class="p-2">
+                    <label for="toDate" class="block mb-2 text-center"
+                      >To</label
+                    >
+                    <input
+                      type="date"
+                      name="toDate"
+                      id="toDate"
+                      class="border rounded p-2 w-full"
+                    />
+                  </div>
                 </div>
                 <div class="flex justify-center">
                   <button
@@ -65,18 +71,50 @@
                   </button>
                 </div>
               </form>
-              <div class="p-4">
-                <table class="w-full">
-                  <tbody>
-                    <% for(var i = 0; i < list.length; i++) { %>
-                    <tr>
-                      <td class="text-center font-bold"><%= list[i][0] %></td>
-                      <td class="text-center"><%= list[i][1] %></td>
-                    </tr>
-                    <% } %>
-                  </tbody>
-                </table>
-              </div>
+            </div>
+
+            <div class="p-4">
+              <table class="w-full border border-gray-300">
+                <thead>
+                  <tr>
+                    <th
+                      class="p-3 text-center font-bold border border-gray-300 rounded-md"
+                    >
+                      Rank
+                    </th>
+                    <th
+                      class="p-3 text-center font-bold border border-gray-300 rounded-md"
+                    >
+                      Sport
+                    </th>
+                    <th
+                      class="p-3 text-center font-bold border border-gray-300 rounded-md"
+                    >
+                      No of Sessions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <h5 class="text-xl font-bold text-gray-600 pb-5 text-center">
+                    Rank of Sports according to number of Sessions
+                  </h5>
+                  <% for(var i = 0; i < list.length; i++) { %>
+                  <tr>
+                    <td class="text-center border border-gray-300">
+                      <%= i+1 %>
+                    </td>
+                    <td class="text-center border font-bold border-gray-300"><a href="/sports/<%= list[i][1].sportsId %>/reportDetails">
+                        <%= list[i][1].sportsname %>
+                    </a>
+                      
+                    </td>
+                    <td class="text-center border border-gray-300">
+                      <%= list[i][1].sessions %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

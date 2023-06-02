@@ -52,6 +52,27 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static async previousSessions(sportsId) {
+      return this.findAll({
+        where: {
+          sportsId,
+          sessionDate: {
+            [Op.lt]: new Date(),
+          },
+          isCancelled: false,
+        },
+      });
+    }
+
+    static async cancelledSessions(sportsId) {
+      return this.findAll({
+        where: {
+          sportsId,
+          isCancelled: true,
+        },
+      });
+    }
+
     static async getSessionIds(sportsId) {
       return this.findAll({
         where: { sportsId },
@@ -162,18 +183,6 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async previousSessions(sportsId) {
-      return this.findAll({
-        where: {
-          sportsId,
-          sessionDate: {
-            [Op.lt]: new Date(),
-          },
-          isCancelled: false,
-        },
-      });
-    }
-
     static async countSessionsAll(sportsId) {
       return this.count({
         where: {
@@ -182,7 +191,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async countSession(sportsId, startDate, toDate) {
+    static async countSessions(sportsId, startDate, toDate) {
       return this.count({
         where: {
           sportsId,

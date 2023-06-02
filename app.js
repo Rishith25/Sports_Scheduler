@@ -225,10 +225,15 @@ app.get(
     const SportList = await Sports.getSportsList();
     let sessionCount = [];
     let sportsNames = [];
+    let sportsIds = [];
     for (let i = 0; i < SportList.length; i++) {
       const count = await Sessions.countSessionsAll(SportList[i].id);
       sessionCount.push(count);
-      sportsNames.push(SportList[i].sportsname);
+      sportsNames.push({
+        sportsname: SportList[i].sportsname,
+        sportsId: SportList[i].id,
+        sessions: count,
+      });
     }
     console.log(sessionCount);
     console.log(sportsNames);
@@ -236,13 +241,13 @@ app.get(
     var sessionsPerSport = {};
 
     for (let i = 0; i < SportList.length; i++) {
-      sessionsPerSport[sportsNames[i]] = sessionCount[i];
+      sessionsPerSport[sportsNames[i][0]] = sessionCount[i];
     }
 
-    var list = Object.entries(sessionsPerSport); //sessionsPerSports in array format = [['Sport Name', 'count']...]
+    var list = Object.entries(sportsNames); //sessionsPerSports in array format = [['Sport Name', 'count']...]
 
     list.sort((first, second) => {
-      return second[1] - first[1];
+      return second[1].sessions - first[1].sessions;
     });
     console.log(list);
 
@@ -263,6 +268,7 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const user = request.user;
+    const userName = request.user.firstName + " " + request.user.lastName;
     const startDate = request.body.startDate;
     const toDate = request.body.toDate;
     const SportList = await Sports.getSportsList();
@@ -277,6 +283,12 @@ app.post(
       sessionCount.push(count);
       sportsNames.push(SportList[i].sportsname);
     }
+    var sessionsPerSport = {};
+
+    for (let i = 0; i < SportList.length; i++) {
+      sessionsPerSport[sportsNames[i]] = sessionCount[i];
+    }
+
     var list = Object.entries(sessionsPerSport); //sessionsPerSports in array format = [['Sport Name', 'count']...]
 
     list.sort((first, second) => {
@@ -291,8 +303,45 @@ app.post(
       list,
       startDate,
       toDate,
+      csrfToken: request.csrfToken,
+    });
+  }
+);
+
+app.get(
+  "/sports/:id/reportDetails",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const userName = request.user.firstName + " " + request.user.lastName;
+    const user = request.user;
+    const sportsId = request.params.id;
+    console.log(sportsId);
+    const sportsname = await Sports.getSportsTitle(sportsId);
+    const upComingSessions = await Sessions.upComingSessions(sportsId);
+    const previousSessions = await Sessions.previousSessions(sportsId);
+    const cancelledSessions = await Sessions.cancelledSessions(sportsId);
+
+    response.render("reportDetails", {
+      title: "Sports Scheduler",
+      user,
+      userName,
+      sportsId,
+      sportsname,
+      upComingSessions,
+      previousSessions,
+      cancelledSessions,
       csrfToken: request.csrfToken(),
     });
+  }
+);
+
+app.get(
+  "/sports/:id/reportDetails/:startDate/:toDate",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const userName = request.user.firstName + " " + request.user.lastName;
+    const user = request.user;
+    const sportsId = request.params.id;
   }
 );
 
