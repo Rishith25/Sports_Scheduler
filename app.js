@@ -549,33 +549,6 @@ app.post(
     const user = request.user;
     // console.log("Creator name", request.user)
     try {
-      const userId = request.body.creatorId;
-      const userName = request.user.firstName + " " + request.user.lastName;
-
-      //allow to Create
-      let allowUser = true;
-      let userJoined = null;
-      const joinedSessions = await sessionPlayers.getSessionsJoined(userId);
-      for (var i = 0; i < joinedSessions.length; i++) {
-        userJoined = await Sessions.sessionByIdDate(
-          joinedSessions[i].sessionId,
-          request.body.sessionDate
-        );
-        if (userJoined === null) {
-          allowUser = true;
-        } else {
-          allowUser = false;
-          break;
-        }
-      }
-      if (allowUser == false) {
-        request.flash(
-          "error",
-          "User can not create this session as you are having another session scheduled at the same time"
-        );
-        return response.redirect(`/sports/${sportsId}`);
-      }
-
       const session = await Sessions.createSession({
         sessionDate: request.body.sessionDate,
         sessionVenue: request.body.sessionVenue,
@@ -584,6 +557,33 @@ app.post(
         sportsId: request.body.sportsId,
         creatorId: request.body.creatorId,
       });
+      const userId = request.body.creatorId;
+      const userName = request.user.firstName + " " + request.user.lastName;
+
+      // //allow to Create
+      // let allowUser = true;
+      // let userJoined = null;
+      // const joinedSessions = await sessionPlayers.getSessionsJoined(userId);
+      // for (var i = 0; i < joinedSessions.length; i++) {
+      //   userJoined = await Sessions.sessionByIdDate(
+      //     joinedSessions[i].sessionId,
+      //     request.body.sessionDate
+      //   );
+      //   if (userJoined === null) {
+      //     allowUser = true;
+      //   } else {
+      //     allowUser = false;
+      //     break;
+      //   }
+      // }
+      // if (allowUser == false) {
+      //   request.flash(
+      //     "error",
+      //     "User can not create this session as you are having another session scheduled at the same time"
+      //   );
+      //   return response.redirect(`/sports/${sportsId}`);
+      // }
+
       const sessionId = session.id;
       sessionPlayers.joinCreator({
         userId,
