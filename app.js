@@ -110,6 +110,67 @@ app.get("/login", async (request, response) => {
 });
 
 app.post("/users", async (request, response) => {
+  if (
+    request.body.firstName.length == 0 &&
+    request.body.email.length == 0 &&
+    request.body.password.length == 0
+  ) {
+    request.flash("error", "First Name can not be Empty");
+    request.flash("error", "Email can not be Empty");
+    request.flash("error", "Password can not be Empty");
+    return response.redirect("/signup");
+  }
+  if (
+    request.body.firstName.length == 0 &&
+    request.body.email.length == 0 &&
+    request.body.password.length != 0
+  ) {
+    request.flash("error", "Email can not be Empty");
+    request.flash("error", "First Name can not be Empty");
+    return response.redirect("/signup");
+  }
+  if (
+    request.body.firstName.length == 0 &&
+    request.body.email.length != 0 &&
+    request.body.password.length == 0
+  ) {
+    request.flash("error", "First Name can not be Empty");
+    request.flash("error", "Password can not be Empty");
+    return response.redirect("/signup");
+  }
+  if (
+    request.body.firstName.length == 0 &&
+    request.body.email.length != 0 &&
+    request.body.password.length != 0
+  ) {
+    request.flash("error", "First Name can not be Empty");
+    return response.redirect("/signup");
+  }
+  if (
+    request.body.firstName.length != 0 &&
+    request.body.email.length == 0 &&
+    request.body.password.length == 0
+  ) {
+    request.flash("error", "Email can not be Empty");
+    request.flash("error", "Password can not be Empty");
+    return response.redirect("/signup");
+  }
+  if (
+    request.body.firstName.length != 0 &&
+    request.body.email.length == 0 &&
+    request.body.password.length != 0
+  ) {
+    request.flash("error", "Email can not be Empty");
+    return response.redirect("/signup");
+  }
+  if (
+    request.body.firstName.length != 0 &&
+    request.body.email.length != 0 &&
+    request.body.password.length == 0
+  ) {
+    request.flash("error", "Password can not be Empty");
+    return response.redirect("/signup");
+  }
   //Hash password using bcrypt
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
   //Have to create the uer here
@@ -137,10 +198,9 @@ app.post(
   "/session",
   passport.authenticate("local", {
     failureRedirect: "/login",
-    // failureFlash: true,
+    failureFlash: true,
   }),
   async (request, response) => {
-    // console.log(request.user);
     response.redirect("/home");
   }
 );
@@ -159,7 +219,7 @@ app.get(
 
       //User Joined Sesseions
       const sessions = await sessionPlayers.getSessionsJoined(loggedInUserId);
-      console.log("Sessions Joined", sessions);
+      // console.log("Sessions Joined", sessions);
       const listOfSessionsJoined = [];
       for (var i = 0; i < sessions.length; i++) {
         listOfSessionsJoined.push(sessions[i].sessionId);
@@ -167,7 +227,7 @@ app.get(
       const sessionDetails = await Sessions.getSessionsById(
         listOfSessionsJoined
       );
-      console.log(sessionDetails);
+      // console.log(sessionDetails);
       const UserSessionsCreated = await Sessions.getSessionByUserId(
         loggedInUserId
       );
@@ -208,24 +268,16 @@ app.get("/signout", (request, response, next) => {
 });
 
 app.get(
-  "/createsport",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response, next) => {
-    const userName = request.user.firstName + " " + request.user.lastName;
-    response.render("createsport", {
-      title: "Sports Scheduler",
-      userName,
-      csrfToken: request.csrfToken(),
-    });
-  }
-);
-
-app.get(
   "/reports",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const startDate = request.query.startDate;
     const toDate = request.query.toDate;
+    if (startDate > toDate) {
+      response.flash("error", "Start Date Should be less than To Date");
+      return response.redirect("/reports");
+    }
+
     const user = request.user;
     const userName = request.user.firstName + " " + request.user.lastName;
     const SportList = await Sports.getSportsList();
@@ -273,49 +325,67 @@ app.post(
   "/reports",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    const user = request.user;
-    const userName = request.user.firstName + " " + request.user.lastName;
-    const startDate = request.body.startDate;
-    const toDate = request.body.toDate;
-    const SportList = await Sports.getSportsList();
-    let sessionCount = [];
-    let sportsNames = [];
-    for (let i = 0; i < SportList.length; i++) {
-      const count = await Sessions.countSessions(
-        SportList[i].id,
-        startDate,
-        toDate
-      );
-      sessionCount.push(count);
-      sportsNames.push({
-        sportsname: SportList[i].sportsname,
-        sportsId: SportList[i].id,
-        sessions: count,
+    try {
+      const user = request.user;
+      const userName = request.user.firstName + " " + request.user.lastName;
+      const startDate = request.body.startDate;
+      const toDate = request.body.toDate;
+      if (startDate.length == 0 && toDate.length == 0) {
+        request.flash("error", "Start Date and To Date Can not be empty");
+        return response.redirect("/reports");
+      }
+      if (startDate.length != 0 && toDate.length == 0) {
+        request.flash("error", "To Date Can not be empty");
+        return response.redirect("/reports");
+      }
+      if (startDate.length == 0 && toDate.length != 0) {
+        request.flash("error", "Start Date Can not be empty");
+        return response.redirect("/reports");
+      }
+      const SportList = await Sports.getSportsList();
+      let sessionCount = [];
+      let sportsNames = [];
+      for (let i = 0; i < SportList.length; i++) {
+        const count = await Sessions.countSessions(
+          SportList[i].id,
+          startDate,
+          toDate
+        );
+        sessionCount.push(count);
+        sportsNames.push({
+          sportsname: SportList[i].sportsname,
+          sportsId: SportList[i].id,
+          sessions: count,
+        });
+      }
+      console.log(sportsNames);
+      var sessionsPerSport = {};
+
+      for (let i = 0; i < SportList.length; i++) {
+        sessionsPerSport[sportsNames[i][0]] = sessionCount[i];
+      }
+
+      var list = Object.entries(sportsNames); //sessionsPerSports in array format = [['Sport Name', 'count']...]
+
+      list.sort((first, second) => {
+        return second[1].sessions - first[1].sessions;
       });
+      console.log(list);
+
+      response.render("reports", {
+        title: "Sports Scheduler",
+        userName,
+        user,
+        list,
+        startDate,
+        toDate,
+        csrfToken: request.csrfToken,
+      });
+    } catch (error) {
+      console.log(error);
+      request.flash("error", "Please Fill start Date and end Date!");
+      response.redirect("/reports");
     }
-    console.log(sportsNames);
-    var sessionsPerSport = {};
-
-    for (let i = 0; i < SportList.length; i++) {
-      sessionsPerSport[sportsNames[i][0]] = sessionCount[i];
-    }
-
-    var list = Object.entries(sportsNames); //sessionsPerSports in array format = [['Sport Name', 'count']...]
-
-    list.sort((first, second) => {
-      return second[1].sessions - first[1].sessions;
-    });
-    console.log(list);
-
-    response.render("reports", {
-      title: "Sports Scheduler",
-      userName,
-      user,
-      list,
-      startDate,
-      toDate,
-      csrfToken: request.csrfToken,
-    });
   }
 );
 
@@ -323,26 +393,30 @@ app.get(
   "/sports/:id/reportDetails//",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    const userName = request.user.firstName + " " + request.user.lastName;
-    const user = request.user;
-    const sportsId = request.params.id;
+    try {
+      const userName = request.user.firstName + " " + request.user.lastName;
+      const user = request.user;
+      const sportsId = request.params.id;
 
-    const sportsname = await Sports.getSportsTitle(sportsId);
-    const upComingSessions = await Sessions.upComingSessions(sportsId);
-    const previousSessions = await Sessions.previousSessions(sportsId);
-    const cancelledSessions = await Sessions.cancelledSessions(sportsId);
+      const sportsname = await Sports.getSportsTitle(sportsId);
+      const upComingSessions = await Sessions.upComingSessions(sportsId);
+      const previousSessions = await Sessions.previousSessions(sportsId);
+      const cancelledSessions = await Sessions.cancelledSessions(sportsId);
 
-    response.render("reportDetails", {
-      title: "Sports Scheduler",
-      user,
-      userName,
-      sportsId,
-      sportsname,
-      upComingSessions,
-      previousSessions,
-      cancelledSessions,
-      csrfToken: request.csrfToken(),
-    });
+      response.render("reportDetails", {
+        title: "Sports Scheduler",
+        user,
+        userName,
+        sportsId,
+        sportsname,
+        upComingSessions,
+        previousSessions,
+        cancelledSessions,
+        csrfToken: request.csrfToken(),
+      });
+    } catch {
+      console.log(error);
+    }
   }
 );
 
@@ -383,11 +457,25 @@ app.get(
   }
 );
 
+app.get(
+  "/createsport",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response, next) => {
+    const userName = request.user.firstName + " " + request.user.lastName;
+    response.render("createsport", {
+      title: "Sports Scheduler",
+      userName,
+      csrfToken: request.csrfToken(),
+    });
+  }
+);
+
 app.post(
   "/sports",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     // console.log("Creating a Sport", request.body)
+    const sportname = request.body.sportname;
     // Sports Adding
     try {
       const listSports = await Sports.addSport({
@@ -396,7 +484,26 @@ app.post(
       return response.redirect("/home");
     } catch (error) {
       console.log(error);
-      return response.status(422).json(error);
+      if (error.name == "SequelizeValidationError") {
+        const errMsg = error.errors.map((error) => error.message);
+        errMsg.forEach((message) => {
+          if (message == "Validation notEmpty on sportsname failed") {
+            request.flash("error", "Sport Name cannot be empty");
+          }
+        });
+        return response.redirect("/createsport");
+      } else if (error.name == "SequelizeUniqueConstraintError") {
+        const errMsg = error.errors.map((error) => error.message);
+        console.log(errMsg);
+        errMsg.forEach((message) => {
+          if (message == "sportsname must be unique") {
+            request.flash("error", "Sport already created");
+          }
+        });
+        return response.redirect("/createSport");
+      } else {
+        return response.status(422).json(error);
+      }
     }
   }
 );
@@ -836,9 +943,11 @@ app.post(
         const newHashedPassword = await bcrypt.hash(newPassword, saltRounds);
         await User.updatePassword(newHashedPassword, user.id);
       }
+      request.flash("success", "Password changed successfully");
       response.redirect("/user/changePassword");
     } catch (error) {
       console.log(error);
+      request.flash("error", "An error occurred while changing the password");
       return response.status(422).json(error);
     }
   }

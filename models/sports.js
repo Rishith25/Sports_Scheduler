@@ -58,7 +58,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   Sports.init(
     {
-      sportsname: DataTypes.STRING,
+      sportsname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+        unique: true,
+      },
     },
     {
       sequelize,

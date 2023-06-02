@@ -241,11 +241,34 @@ module.exports = (sequelize, DataTypes) => {
   }
   Sessions.init(
     {
-      sessionDate: DataTypes.DATE,
-      sessionVenue: DataTypes.STRING,
-      sessionPlayers: DataTypes.ARRAY(DataTypes.STRING),
-      sessionCount: DataTypes.INTEGER,
-      isCancelled: DataTypes.BOOLEAN,
+      sessionDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      sessionVenue: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      sessionPlayers: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+      },
+      sessionCount: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      isCancelled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       reason: DataTypes.STRING,
       creatorId: DataTypes.INTEGER,
     },

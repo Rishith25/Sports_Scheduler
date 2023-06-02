@@ -47,7 +47,6 @@
                   name="sportsname"
                   placeholder="Enter Sport Name"
                   class="border border-gray-300 rounded-lg text-gray-900 w-full p-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-                  required
                 />
               </div>
               <br />
@@ -61,6 +60,13 @@
               </div>
             </div>
           </form>
+          <% if(messages && messages.error && messages.error.length> 0) { %> <%
+          for(var i=0; i < messages.error.length; i++) { %>
+          <li>
+            <%= messages.error[i] %>
+            <br />
+          </li>
+          <% } %> <% } %>
         </div>
       </div>
     </div>
