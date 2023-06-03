@@ -10,80 +10,115 @@
     <link rel="stylesheet" href="./css/style.css" />
   </head>
 
-  <body>
+  <body class="bg-gray-200">
+    <nav class="bg-gray-800">
+      <div
+        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
+      >
+        <div class="text-white text-lg font-semibold">
+          <a href="/home"><%= title %></a>
+          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
+            <a href="/home">Home</a>
+          </span>
+          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
+            <a href="/user/changePassword">Change Password</a>
+          </span>
+        </div>
+
+        <div>
+          <span class="text-gray-300 mr-4">Welcome <%= userName %></span>
+          <a
+            href="/signout"
+            class="inline-block px-4 py-2 text-white bg-red-600 rounded-md font-medium"
+            >Sign Out</a
+          >
+        </div>
+      </div>
+    </nav>
+    <br />
+    <br />
+    <br />
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
-        <h2 class="text-3xl font-semibold text-gray-600">Edit Session</h2>
-        <form action="/sessions/<%= sessionId %>/editsession" method="post">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          <input
-            type="hidden"
-            name=" session.sportsId"
-            value="<%= session.sportsId %>"
-          />
-          <input
-            type="hidden"
-            name=" session.creatorId"
-            value="<%= session.creatorId %>"
-          />
-          <div>
-            <label for="sessionDate" class="block text-gray-700"
-              >When will this Sport Session be held?</label
-            >
+        <div class="col-start-3 col-span-2 bg-white rounded-lg shadow-md p-8">
+          <h2 class="text-3xl font-semibold text-gray-600">Edit Session</h2>
+          <br />
+          <form action="/sessions/<%= sessionId %>/editsession" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <input
-              type="datetime-local"
-              name="sessionDate"
-              id="sessionDate"
-              value="<%= session.sessionDate.toISOString().slice(0,16) %>"
-              class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              type="hidden"
+              name=" session.sportsId"
+              value="<%= session.sportsId %>"
             />
-          </div>
-          <div>
-            <label for="sessionVenue" class="block text-gray-700"
-              >Where will this session be played?</label
-            >
             <input
-              type="text"
-              name="sessionVenue"
-              id="sessionVenue"
-              value="<%= session.sessionVenue %>"
-              class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              type="hidden"
+              name=" session.creatorId"
+              value="<%= session.creatorId %>"
             />
-          </div>
-          <div>
-            <label for="sessionPlayers" class="block text-gray-700"
-              >Who all will be joining you in this
-              session?(comma-seperated)</label
-            >
-            <input
-              type="text"
-              name="sessionPlayers"
-              id="sessionPlayers"
-              value="<%= session.sessionPlayers %>"
-              class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div>
-            <label for="sessionCount" class="block text-gray-700"
-              >How many more players do you need?</label
-            >
-            <input
-              type="integer"
-              name="sessionCount"
-              id="sessionCount"
-              value="<%= session.sessionCount %>"
-              class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div>
-            <button
-              type="submit"
-              class="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-            >
-              Edit
-            </button>
-          </div>
-        </form>
+            <div>
+              <label for="sessionDate" class="block text-gray-700"
+                >When will this Sport Session be held?</label
+              >
+              <input
+                type="datetime-local"
+                name="sessionDate"
+                id="sessionDate"
+                value="<%= session.sessionDate.toISOString().slice(0,16) %>"
+                class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                min="<%= new Date().toISOString().slice(0, 16) %>"
+              />
+            </div>
+            <br />
+            <div>
+              <label for="sessionVenue" class="block text-gray-700"
+                >Where will this session be played?</label
+              >
+              <input
+                type="text"
+                name="sessionVenue"
+                id="sessionVenue"
+                value="<%= session.sessionVenue %>"
+                class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <br />
+            <div>
+              <label for="sessionPlayers" class="block text-gray-700"
+                >Who all will be joining you in this
+                session?(comma-seperated)</label
+              >
+              <input
+                type="text"
+                name="sessionPlayers"
+                id="sessionPlayers"
+                value="<%= session.sessionPlayers %>"
+                class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <br />
+            <div>
+              <label for="sessionCount" class="block text-gray-700"
+                >How many more players do you need?</label
+              >
+              <input
+                type="integer"
+                name="sessionCount"
+                id="sessionCount"
+                value="<%= session.sessionCount %>"
+                class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <br />
+            <div>
+              <button
+                type="submit"
+                class="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+              >
+                Edit
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </body>

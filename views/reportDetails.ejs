@@ -9,13 +9,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
-  <body>
+  <body class="bg-gray-200">
     <nav class="bg-gray-800">
       <div
-        class="container mx-auto px-4 py-2 flex justify-between items-center"
+        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
       >
         <div class="text-white text-lg font-semibold">
-          <%= title %>
+          <a href="/home"><%= title %></a>
           <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
             <a href="/home">Home</a>
           </span>
@@ -34,122 +34,125 @@
         </div>
       </div>
     </nav>
-    <div class="grid grid-cols-6">
-      <div class="col-start-2 col-span-4">
-        <div
-          class="col-start-3 col-span-2 bg-white border-gray-300 border mr-4 rounded"
-          style="padding: 20px"
-        >
-          <br />
-          <div>
-            <h3 class="text-2xl font-semibold mb-4 underline">
-              UpComing Sessions (<%= upComingSessions.length %>)
-            </h3>
-          </div>
+    <br /><br /><br />
+    <div class="container mx-auto py-8">
+      <div class="grid grid-cols-6 gap-4">
+        <div class="col-start-2 col-span-4 bg-white rounded-lg shadow-md p-8">
           <div
-            class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            class="col-start-3 col-span-2 bg-white border-gray-300 border mr-4 rounded"
+            style="padding: 20px"
           >
-            <% if(upComingSessions.length > 0) {%> <% for(var i = 0; i <
-            upComingSessions.length; i++) {%>
-            <div class="border border-gray-300 rounded-md p-4">
-              <a href="/sessions/<%= upComingSessions[i].id %>">
-                <p class="text-lg font-semibold mb-2">
-                  <%= upComingSessions[i].sessionDate.toLocaleString('en-US',
-                  {day: '2-digit', month: '2-digit', year: 'numeric', hour:
-                  '2-digit', minute: '2-digit', hour12: true}) %>
-                </p>
-                <% if(upComingSessions[i].sessionCount == 1) { %>
-                <p class="text-sm font-semibold text-red-600">Last Slot</p>
-                <% } else if(upComingSessions[i].sessionCount == 0) { %>
-                <p class="text-sm font-semibold text-red-600">Fully Booked</p>
-                <% } else { %>
-                <p class="text-sm font-semibold text-green-600">
-                  <%= upComingSessions[i].sessionCount + " slots" %>
-                </p>
-                <% } %> <% if(upComingSessions[i].isCancelled) { %>
-                <h3 class="text-red-600 font-semibold">Cancelled</h3>
-                <% } %>
-              </a>
+            <br />
+            <div>
+              <h3 class="text-2xl font-semibold mb-4 underline">
+                UpComing Sessions (<%= upComingSessions.length %>)
+              </h3>
             </div>
-            <% } %> <% } else { %>
-            <h2 class="text-2xl font-semibold text-red-600">
-              There are NO UpComing Sessions.
-            </h2>
-            <% } %>
-          </div>
-          <br />
-          <div>
-            <h3 class="text-2xl font-semibold mb-4 underline">
-              Previous Sessions (<%= previousSessions.length %>)
-            </h3>
-          </div>
-          <div
-            class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            <% if(previousSessions.length > 0) {%> <% for(var i = 0; i <
-            previousSessions.length; i++) {%>
-            <div class="border border-gray-300 rounded-md p-4">
-              <a href="/sessions/<%= previousSessions[i].id %>">
-                <p class="text-lg font-semibold mb-2">
-                  <%= previousSessions[i].sessionDate.toLocaleString('en-US',
-                  {day: '2-digit', month: '2-digit', year: 'numeric', hour:
-                  '2-digit', minute: '2-digit', hour12: true}) %>
-                </p>
-                <% if(previousSessions[i].sessionCount == 1) { %>
-                <p class="text-sm font-semibold text-red-600">Last Slot</p>
-                <% } else if(previousSessions[i].sessionCount == 0) { %>
-                <p class="text-sm text-red-600 font-semibold">Fully Booked</p>
-                <% } else { %>
-                <p class="text-sm text-green-600 font-semibold">
-                  <%= previousSessions[i].sessionCount + " slots" %>
-                </p>
-                <% } %> <% if(previousSessions[i].isCancelled) { %>
-                <h3 class="text-red-600 font-semibold">Cancelled</h3>
-                <% } %>
-              </a>
+            <div
+              class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              <% if(upComingSessions.length > 0) {%> <% for(var i = 0; i <
+              upComingSessions.length; i++) {%>
+              <div class="border border-gray-300 rounded-md p-4">
+                <a href="/sessions/<%= upComingSessions[i].id %>">
+                  <p class="text-lg font-semibold mb-2">
+                    <%= upComingSessions[i].sessionDate.toLocaleString('en-US',
+                    {day: '2-digit', month: '2-digit', year: 'numeric', hour:
+                    '2-digit', minute: '2-digit', hour12: true}) %>
+                  </p>
+                  <% if(upComingSessions[i].sessionCount == 1) { %>
+                  <p class="text-sm font-semibold text-red-600">Last Slot</p>
+                  <% } else if(upComingSessions[i].sessionCount == 0) { %>
+                  <p class="text-sm font-semibold text-red-600">Fully Booked</p>
+                  <% } else { %>
+                  <p class="text-sm font-semibold text-green-600">
+                    <%= upComingSessions[i].sessionCount + " slots" %>
+                  </p>
+                  <% } %> <% if(upComingSessions[i].isCancelled) { %>
+                  <h3 class="text-red-600 font-semibold">Cancelled</h3>
+                  <% } %>
+                </a>
+              </div>
+              <% } %> <% } else { %>
+              <h2 class="text-2xl font-semibold text-red-600">
+                There are NO UpComing Sessions.
+              </h2>
+              <% } %>
             </div>
-            <% } %> <% } else { %>
-            <h2 class="text-2xl font-semibold text-red-600">
-              There are NO Previous Sessions.
-            </h2>
-            <% } %>
-          </div>
-          <br />
-          <div>
-            <h3 class="text-2xl font-semibold mb-4 underline">
-              Cancelled Sessions (<%= cancelledSessions.length %>)
-            </h3>
-          </div>
-          <div
-            class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            <% if(cancelledSessions.length > 0) {%> <% for(var i = 0; i <
-            cancelledSessions.length; i++) {%>
-            <div class="border border-gray-300 rounded-md p-4">
-              <a href="/sessions/<%= cancelledSessions[i].id %>">
-                <p class="text-lg font-semibold mb-2">
-                  <%= cancelledSessions[i].sessionDate.toLocaleString('en-US',
-                  {day: '2-digit', month: '2-digit', year: 'numeric', hour:
-                  '2-digit', minute: '2-digit', hour12: true}) %>
-                </p>
-                <% if(cancelledSessions[i].sessionCount == 1) { %>
-                <p class="text-sm font-semibold text-red-600">Last Slot</p>
-                <% } else if(cancelledSessions[i].sessionCount == 0) { %>
-                <p class="text-sm font-semibold text-red-600">Fully Booked</p>
-                <% } else { %>
-                <p class="text-sm font-semibold text-green-600">
-                  <%= cancelledSessions[i].sessionCount + " slots" %>
-                </p>
-                <% } %> <% if(cancelledSessions[i].isCancelled) { %>
-                <h3 class="text-red-600 font-semibold">Cancelled</h3>
-                <% } %>
-              </a>
+            <br />
+            <div>
+              <h3 class="text-2xl font-semibold mb-4 underline">
+                Previous Sessions (<%= previousSessions.length %>)
+              </h3>
             </div>
-            <% } %> <% } else { %>
-            <h2 class="text-2xl font-semibold text-red-600">
-              There are NO Cancelled Sessions.
-            </h2>
-            <% } %>
+            <div
+              class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              <% if(previousSessions.length > 0) {%> <% for(var i = 0; i <
+              previousSessions.length; i++) {%>
+              <div class="border border-gray-300 rounded-md p-4">
+                <a href="/sessions/<%= previousSessions[i].id %>">
+                  <p class="text-lg font-semibold mb-2">
+                    <%= previousSessions[i].sessionDate.toLocaleString('en-US',
+                    {day: '2-digit', month: '2-digit', year: 'numeric', hour:
+                    '2-digit', minute: '2-digit', hour12: true}) %>
+                  </p>
+                  <% if(previousSessions[i].sessionCount == 1) { %>
+                  <p class="text-sm font-semibold text-red-600">Last Slot</p>
+                  <% } else if(previousSessions[i].sessionCount == 0) { %>
+                  <p class="text-sm text-red-600 font-semibold">Fully Booked</p>
+                  <% } else { %>
+                  <p class="text-sm text-green-600 font-semibold">
+                    <%= previousSessions[i].sessionCount + " slots" %>
+                  </p>
+                  <% } %> <% if(previousSessions[i].isCancelled) { %>
+                  <h3 class="text-red-600 font-semibold">Cancelled</h3>
+                  <% } %>
+                </a>
+              </div>
+              <% } %> <% } else { %>
+              <h2 class="text-2xl font-semibold text-red-600">
+                There are NO Previous Sessions.
+              </h2>
+              <% } %>
+            </div>
+            <br />
+            <div>
+              <h3 class="text-2xl font-semibold mb-4 underline">
+                Cancelled Sessions (<%= cancelledSessions.length %>)
+              </h3>
+            </div>
+            <div
+              class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              <% if(cancelledSessions.length > 0) {%> <% for(var i = 0; i <
+              cancelledSessions.length; i++) {%>
+              <div class="border border-gray-300 rounded-md p-4">
+                <a href="/sessions/<%= cancelledSessions[i].id %>">
+                  <p class="text-lg font-semibold mb-2">
+                    <%= cancelledSessions[i].sessionDate.toLocaleString('en-US',
+                    {day: '2-digit', month: '2-digit', year: 'numeric', hour:
+                    '2-digit', minute: '2-digit', hour12: true}) %>
+                  </p>
+                  <% if(cancelledSessions[i].sessionCount == 1) { %>
+                  <p class="text-sm font-semibold text-red-600">Last Slot</p>
+                  <% } else if(cancelledSessions[i].sessionCount == 0) { %>
+                  <p class="text-sm font-semibold text-red-600">Fully Booked</p>
+                  <% } else { %>
+                  <p class="text-sm font-semibold text-green-600">
+                    <%= cancelledSessions[i].sessionCount + " slots" %>
+                  </p>
+                  <% } %> <% if(cancelledSessions[i].isCancelled) { %>
+                  <h3 class="text-red-600 font-semibold">Cancelled</h3>
+                  <% } %>
+                </a>
+              </div>
+              <% } %> <% } else { %>
+              <h2 class="text-2xl font-semibold text-red-600">
+                There are NO Cancelled Sessions.
+              </h2>
+              <% } %>
+            </div>
           </div>
         </div>
       </div>

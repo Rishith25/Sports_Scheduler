@@ -10,39 +10,68 @@
     <link rel="stylesheet" href="./css/style.css" />
   </head>
 
-  <body>
-    <div class="grid grid-cols-6">
-      <div class="col-start-3 col-span-2">
-        <h2 class="text-xl font-semibold text-gray-600">Edit Sports</h2>
-        <form action="/sports/<%= sportsId %>/editSport" method="post">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          <div class="py-3">
-            <label for="sportsname">What is the Sports Name?</label>
-            <input
-              type="text"
-              name="sportsname"
-              class="border border-gray-600 text-gray-900 rounded p-2 w-full"
-              placeholder="Enter Sports Name"
-              value="<%= sports.sportsname %>"
-              required
-            />
-          </div>
-          <div class="py-3">
-            <button
-              type="submit"
-              class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded px-5 py-2"
-            >
-              Submit
-            </button>
-          </div>
-        </form>
-        <% if(messages && messages.error && messages.error.length> 0) { %> <%
-        for(var i=0; i < messages.error.length; i++) { %>
-        <li>
-          <%= messages.error[i] %>
-          <br />
-        </li>
-        <% } %> <% } %>
+  <body class="bg-gray-200">
+    <nav class="bg-gray-800">
+      <div
+        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
+      >
+        <div class="text-white text-lg font-semibold">
+          <a href="/home"><%= title %></a>
+          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
+            <a href="/home">Home</a>
+          </span>
+          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
+            <a href="/user/changePassword">Change Password</a>
+          </span>
+        </div>
+
+        <div>
+          <span class="text-gray-300 mr-4">Welcome <%= userName %></span>
+          <a
+            href="/signout"
+            class="inline-block px-4 py-2 text-white bg-red-600 rounded-md font-medium"
+            >Sign Out</a
+          >
+        </div>
+      </div>
+    </nav>
+    <br />
+    <br />
+    <br />
+    <div class="container mx-auto py-8">
+      <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2 bg-white rounded-lg shadow-md p-8">
+          <h2 class="text-xl font-semibold text-gray-600">Edit Sports</h2>
+          <form action="/sports/<%= sportsId %>/editSport" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <div class="py-3">
+              <label for="sportsname">What is the Sports Name?</label>
+              <input
+                type="text"
+                name="sportsname"
+                class="border border-gray-600 text-gray-900 rounded p-2 w-full"
+                placeholder="Enter Sports Name"
+                value="<%= sports.sportsname %>"
+                required
+              />
+            </div>
+            <div class="py-3">
+              <button
+                type="submit"
+                class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded px-5 py-2"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+          <% if(messages && messages.error && messages.error.length> 0) { %> <%
+          for(var i=0; i < messages.error.length; i++) { %>
+          <li>
+            <%= messages.error[i] %>
+            <br />
+          </li>
+          <% } %> <% } %>
+        </div>
       </div>
     </div>
   </body>

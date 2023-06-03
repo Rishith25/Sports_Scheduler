@@ -35,13 +35,13 @@
     </script>
   </head>
 
-  <body style="background-color: #f2f2f2">
+  <body class="bg-gray-200">
     <nav class="bg-gray-800">
       <div
-        class="container mx-auto px-4 py-2 flex justify-between items-center"
+        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
       >
         <div class="text-white text-lg font-semibold">
-          <%= title %>
+          <a href="/home"><%= title %></a>
           <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
             <a href="/home">Home</a>
           </span>
@@ -59,16 +59,17 @@
         </div>
       </div>
     </nav>
-    <div class="grid grid-cols-6 pt-10">
-      <div class="col-start-2 col-span-4">
+    <br /><br /><br />
+    <div class="container mx-auto py-8">
+      <div class="grid grid-cols-6">
         <div class="col-start-2 col-span-4 bg-white rounded-lg shadow-md p-8">
           <div
-            class="col-start-3 col-span-2 bg-white border-gray-300 border mr-4 rounded"
+            class="col-start-3 col-span-2 bg-white mr-4 rounded"
             style="padding: 20px"
           >
             <div class="font-semibold text-gray-600">
               <span>
-                <h1 class="text-3xl"><%= sportsname %></h1>
+                <h1 class="text-3xl"><%= sportsname %> Sessions</h1>
               </span>
               <span>
                 <% if(user.role == "admin") {%>
@@ -118,7 +119,9 @@
                     <% if(sessionsList[i].sessionCount == 1) { %>
                     <p class="text-sm font-semibold text-red-600">Last Slot</p>
                     <% } else if(sessionsList[i].sessionCount == 0) { %>
-                    <p class="text-sm font-semibold text-red-600">Fully Booked</p>
+                    <p class="text-sm font-semibold text-red-600">
+                      Fully Booked
+                    </p>
                     <% } else { %>
                     <p class="text-sm font-semibold text-green-600">
                       <%= sessionsList[i].sessionCount + " slots" %>

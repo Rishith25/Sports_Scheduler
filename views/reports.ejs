@@ -12,10 +12,10 @@
   <body class="bg-gray-200">
     <nav class="bg-gray-800">
       <div
-        class="container mx-auto px-4 py-2 flex justify-between items-center"
+        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
       >
         <div class="text-white text-lg font-semibold">
-          <%= title %>
+          <a href="/home"><%= title %></a>
           <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
             <a href="/home">Home</a>
           </span>
@@ -34,6 +34,7 @@
         </div>
       </div>
     </nav>
+    <br><br><br>
     <div class="container mx-auto py-8">
       <div class="grid grid-cols-6">
         <div class="col-start-2 col-span-4 bg-white rounded-lg shadow-md p-8">

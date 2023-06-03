@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="./css/style.css" />
   </head>
 
-  <body>
+  <body class="bg-gray-200">
     <nav class="bg-gray-800">
       <div
-        class="container mx-auto px-4 py-2 flex justify-between items-center"
+        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
       >
         <div class="text-white text-lg font-semibold">
-          <%= title %>
+          <a href="/home"><%= title %></a>
           <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
             <a href="/home">Home</a>
           </span>
@@ -35,78 +35,86 @@
         </div>
       </div>
     </nav>
-    <div class="grid grid-cols-6">
-      <div class="col-start-3 col-span-2">
-        <h2 class="text-3xl font-semibold text-gray-600">
-          New <%= sportsname %> Session
-        </h2>
-        <form action="/sessions" method="post">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          <input type="hidden" name="sportsId" value="<%= sportsId %>" />
-          <input type="hidden" name="creatorId" value="<%= creatorId %>" />
-          <div>
-            <label for="sessionDate" class="block text-gray-700"
-              >When will this Sport Session be held?</label
-            >
-            <input
-              type="datetime-local"
-              name="sessionDate"
-              id="sessionDate"
-              class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              min="<%= new Date().toISOString().slice(0, 16) %>"
-            />
-          </div>
-          <div>
-            <label for="sessionVenue" class="block text-gray-700"
-              >Where will this session be played?</label
-            >
-            <input
-              type="text"
-              name="sessionVenue"
-              id="sessionVenue"
-              class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div>
-            <label for="sessionPlayers" class="block text-gray-700"
-              >Who all will be joining you in this
-              session?(comma-seperated)</label
-            >
-            <input
-              type="text"
-              name="sessionPlayers"
-              id="sessionPlayers"
-              class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div>
-            <label for="sessionCount" class="block text-gray-700"
-              >How many more players do you need?</label
-            >
-            <input
-              type="integer"
-              name="sessionCount"
-              id="sessionCount"
-              class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
+    <br />
+    <br />
+    <div class="container mx-auto py-8">
+      <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2 bg-white rounded-lg shadow-md p-8">
+          <h2 class="text-3xl font-semibold text-gray-600">
+            New <%= sportsname %> Session
+          </h2>
           <br>
-          <div>
-            <button
-              type="submit"
-              class="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
-            >
-              Submit
-            </button>
-          </div>
-        </form>
-        <% if(messages && messages.error && messages.error.length> 0) { %> <%
-        for(var i=0; i < messages.error.length; i++) { %>
-        <li>
-          <%= messages.error[i] %>
-          <br />
-        </li>
-        <% } %> <% } %>
+          <form action="/sessions" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <input type="hidden" name="sportsId" value="<%= sportsId %>" />
+            <input type="hidden" name="creatorId" value="<%= creatorId %>" />
+            <div>
+              <label for="sessionDate" class="block text-gray-700"
+                >When will this Sport Session be held?</label
+              >
+              <input
+                type="datetime-local"
+                name="sessionDate"
+                id="sessionDate"
+                class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                min="<%= new Date().toISOString().slice(0, 16) %>"
+              />
+            </div>
+            <br>
+            <div>
+              <label for="sessionVenue" class="block text-gray-700"
+                >Where will this session be played?</label
+              >
+              <input
+                type="text"
+                name="sessionVenue"
+                id="sessionVenue"
+                class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <br>
+            <div>
+              <label for="sessionPlayers" class="block text-gray-700"
+                >Who all will be joining you in this
+                session?(comma-seperated)</label
+              >
+              <input
+                type="text"
+                name="sessionPlayers"
+                id="sessionPlayers"
+                class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <br>
+            <div>
+              <label for="sessionCount" class="block text-gray-700"
+                >How many more players do you need?</label
+              >
+              <input
+                type="integer"
+                name="sessionCount"
+                id="sessionCount"
+                class="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <br />
+            <div>
+              <button
+                type="submit"
+                class="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+          <% if(messages && messages.error && messages.error.length> 0) { %> <%
+          for(var i=0; i < messages.error.length; i++) { %>
+          <li>
+            <%= messages.error[i] %>
+            <br />
+          </li>
+          <% } %> <% } %>
+        </div>
       </div>
     </div>
   </body>

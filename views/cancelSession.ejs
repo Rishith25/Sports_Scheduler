@@ -10,20 +10,21 @@
     <link rel="stylesheet" href="./css/style.css" />
   </head>
 
-  <body style="background-color: #f2f2f2">
+  <body class="bg-gray-200">
     <nav class="bg-gray-800">
       <div
-        class="container mx-auto px-4 py-2 flex justify-between items-center"
+        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
       >
-        <div class="text-white text-lg font-semibold"><%= title %></div>
-        <div>
-          <span class="text-gray-300">
+        <div class="text-white text-lg font-semibold">
+          <a href="/home"><%= title %></a>
+          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
             <a href="/home">Home</a>
           </span>
           <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
             <a href="/user/changePassword">Change Password</a>
           </span>
         </div>
+
         <div>
           <span class="text-gray-300 mr-4">Welcome <%= userName %></span>
           <a
@@ -34,8 +35,11 @@
         </div>
       </div>
     </nav>
-    <div class="grid grid-cols-6">
-      <div class="col-start-3 col-span-2">
+    <br />
+    <br />
+    <br />
+    <div class="container grid grid-cols-6">
+      <div class="col-start-3 col-span-2 bg-white rounded-lg shadow-md p-8">
         <h1 class="py-4 text-3xl font-semibold text-slate-600 mt-3">
           Cancel Session
         </h1>
