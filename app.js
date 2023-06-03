@@ -902,13 +902,16 @@ app.get(
     const sessionId = request.params.id;
     const session = await Sessions.getSessionDetails(sessionId);
     const userId = request.user.id;
-    // const sportsId =
+    const sportsId = request.params.sportsId;
+    const creatorId = request.params.creatorId;
     response.render("editSession", {
       title: "Sports Scheduler",
       user,
       userName,
       sessionId,
       session,
+      sportsId,
+      creatorId,
       csrfToken: request.csrfToken(),
     });
   }
@@ -918,6 +921,8 @@ app.post(
   "/sessions/:id/editsession",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const sportsId = request.body.sportsId;
+    const sessionId = request.params.id;
     try {
       const sessionId = request.params.id;
       await Sessions.editSession({
@@ -944,7 +949,7 @@ app.post(
             request.flash("error", "Number of players nedded cannot be empty");
           }
         });
-        response.redirect(`/sports/${sportsId}/new-session`);
+        response.redirect(`/sessions/${sessionId}/editsession`);
       } else {
         console.log(error);
         return response.status(422).json(error);

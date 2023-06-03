@@ -45,6 +45,8 @@
           <br />
           <form action="/sessions/<%= sessionId %>/editsession" method="post">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <input type="hidden" name="sportsId" value="<%= sportsId %>" />
+            <input type="hidden" name="creatorId" value="<%= creatorId %>" />
             <input
               type="hidden"
               name=" session.sportsId"
@@ -118,6 +120,13 @@
               </button>
             </div>
           </form>
+          <% if(messages && messages.error && messages.error.length> 0) { %> <%
+            for(var i=0; i < messages.error.length; i++) { %>
+            <li>
+              <%= messages.error[i] %>
+              <br />
+            </li>
+            <% } %> <% } %>
         </div>
       </div>
     </div>
