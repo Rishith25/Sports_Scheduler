@@ -1,47 +1,27 @@
-# SportsScheduler
+# Sports Scheduler
 
-This is the final capstone project for wd201 pupilfirst.
+This is the final capstone project for AICTE Lite WD201 Pupilfirst.
 
 [Website](https://sports-scheduler-rishith.onrender.com)
 
-## ADMIN
 
-- Email : "dhoni@gmail.com"
+## Features
 
- + Password : "dhoni"
+### Admin
 
-## Key Features
+- Admins has some extra features such as :
 
-1. User Authentication and Security
+- - Creating a Sports
+- - View the Reports of Sessions Created
 
-- Implements user authentication and session management using Passport.js.
+### Players
 
-- Protects against Cross-Site Request Forgery (CSRF) attacks with the use of CSRF tokens.
+- Players can create a session from the sports available
+- Players can change their password.
+- Leave a sessions
 
-- Safely stores and manages user passwords by applying bcrypt hashing.
+### Creator
 
-2. Admin Features
-
-- Admin dashboard for managing events, teams, and venues.
-
-- Add, edit, and delete sports events with relevant details such as date, time, and location.
-
-3. Schedule Generation
-
-- Resolves conflicts, such as overlapping events.
-
-4. Player Features
-
-- Easy access to team schedules, event details, and venue information can change their passwords.
-
-- Able to create sessions from available sports
-
-5. Enhanced User Experience
-
-- Deployed on the Render platform for seamless hosting and scalability.
-
-- Utilizes cookie parser for handling cookies and improving security.
-
-- Implements sequelize validations for data integrity and consistency.
-
-- Provides informative flash messages for improved user feedback.
+- Sessions Creator can edit the sessions created.
+- Add Players or Remove Players.
+- Cancel the sessions created and give the reason if required.
