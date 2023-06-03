@@ -8,7 +8,7 @@ This is the final capstone project for wd201 pupilfirst.
 
 - Email : "dhoni@gmail.com"
 
-  Password : "dhoni"
+ + Password : "dhoni"
 
 ## Key Features
 
