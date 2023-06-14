@@ -23,7 +23,7 @@
               </div>
               <div class="p-4">
                 <form action="/reports" method="post" class="w-full max-w-sm">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <input type="hidden" name="_csrf" id="csrfToken" value="<%= csrfToken %>" />
                   <div class="mb-4 text-center">
                     <div class="p-2">
                       <label for="startDate" class="block mb-2">From</label>

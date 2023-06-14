@@ -49,16 +49,12 @@
                 <% } %> <% if(upComingSessions[i].isCancelled) { %>
                 <h3 class="text-red-600 font-semibold">Cancelled</h3>
                 <h3 class="font-semibold text-gray-500">Reason</h3>
-                    <p class="text-sm font-semibold text-red-600">
-                      <%= upComingSessions[i].reason %>
-                    </p>
-                    <% } %>
-                <% } %>
-              </a>
-            </div>
-            <% } %> <%else { %>
+                <p class="text-sm font-semibold text-red-600">
+                  <%= upComingSessions[i].reason %>
+                </p>
+                <% } %> <% } %> <% } else { %>
             <h2 class="text-2xl font-semibold text-red-600">
-              There are NO UpComing Sessions.
+              There are NO Upcoming Sessions.
             </h2>
             <% } %>
           </div>
@@ -91,14 +87,10 @@
                 <% } %> <% if(cancelledSessions[i].isCancelled) { %>
                 <h3 class="text-red-600 font-semibold">Cancelled</h3>
                 <h3 class="font-semibold text-gray-500">Reason</h3>
-                    <p class="text-sm font-semibold text-red-600">
-                      <%= cancelledSessions[i].reason %>
-                    </p>
-                    <% } %>
-                <% } %>
-              </a>
-            </div>
-            <% } %> <%else { %>
+                <p class="text-sm font-semibold text-red-600">
+                  <%= cancelledSessions[i].reason %>
+                </p>
+                <% } %> <% } %> <% } else { %>
             <h2 class="text-2xl font-semibold text-red-600">
               There are NO Cancelled Sessions.
             </h2>
