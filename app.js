@@ -72,7 +72,6 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  // console.log("Serializing user in session", user.id);
   done(null, user.id);
 });
 
@@ -106,6 +105,14 @@ app.get("/login", async (request, response) => {
     csrfToken: request.csrfToken(),
   });
 });
+
+function requireAdmin(req, res, next) {
+  if (req.user && req.user.role === "admin") {
+    return next();
+  } else {
+    res.status(401).json({ message: "Unauthorized user." });
+  }
+}
 
 app.post("/users", async (request, response) => {
   if (
@@ -272,6 +279,7 @@ app.get("/signout", (request, response, next) => {
 
 app.get(
   "/reports",
+  requireAdmin,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const startDate = request.query.startDate;
@@ -398,6 +406,7 @@ app.post(
 
 app.get(
   "/sports/:id/reportDetails//",
+  requireAdmin,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     try {
@@ -429,6 +438,7 @@ app.get(
 
 app.get(
   "/sports/:id/reportDetails/:startDate/:toDate",
+  requireAdmin,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const userName = request.user.firstName + " " + request.user.lastName;
@@ -466,6 +476,7 @@ app.get(
 
 app.get(
   "/createsport",
+  requireAdmin,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
     const user = request.user;
@@ -521,13 +532,11 @@ app.get(
   "/sports/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    // console.log("Sports Id ",request.params);
     const user = request.user;
     const userName = request.user.firstName + " " + request.user.lastName;
     const sportsId = request.params.id;
     const sportsname = await Sports.getSportsTitle(sportsId);
     const sessionsList = await Sessions.upComingSessions(sportsId);
-    // console.log(sessionsList);
     response.render("session", {
       user,
       userName,
@@ -545,13 +554,8 @@ app.post(
   "/sessions",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    // console.log("Creating a session", request.body)
     const sportsId = request.body.sportsId;
-    // console.log("Sports Id", sportsId);
-    // const sessionDate = new Date(request.body.sessionDate);
-    // const formattedSessionDate = sessionDate.toISOString().slice(0, 16);
     const user = request.user;
-    // console.log("Creator name", request.user)
     try {
       const session = await Sessions.createSession({
         sessionDate: request.body.sessionDate,
@@ -563,30 +567,6 @@ app.post(
       });
       const userId = request.body.creatorId;
       const userName = request.user.firstName + " " + request.user.lastName;
-
-      // //allow to Create
-      // let allowUser = true;
-      // let userJoined = null;
-      // const joinedSessions = await sessionPlayers.getSessionsJoined(userId);
-      // for (var i = 0; i < joinedSessions.length; i++) {
-      //   userJoined = await Sessions.sessionByIdDate(
-      //     joinedSessions[i].sessionId,
-      //     request.body.sessionDate
-      //   );
-      //   if (userJoined === null) {
-      //     allowUser = true;
-      //   } else {
-      //     allowUser = false;
-      //     break;
-      //   }
-      // }
-      // if (allowUser == false) {
-      //   request.flash(
-      //     "error",
-      //     "User can not create this session as you are having another session scheduled at the same time"
-      //   );
-      //   return response.redirect(`/sports/${sportsId}`);
-      // }
 
       const sessionId = session.id;
       sessionPlayers.joinCreator({
@@ -1000,6 +980,7 @@ app.post(
 
 app.get(
   "/sports/:id/editSport",
+  requireAdmin,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const user = request.user;
@@ -1019,6 +1000,7 @@ app.get(
 
 app.delete(
   "/sports/:id",
+  requireAdmin,
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const sportsId = request.params.id;
