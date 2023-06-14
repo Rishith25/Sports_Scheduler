@@ -102,29 +102,7 @@
   </head>
 
   <body class="bg-gray-200">
-    <nav class="bg-gray-800">
-      <div
-        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
-      >
-        <div class="text-white text-lg font-semibold">
-          <a href="/home"><%= title %></a>
-          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
-            <a href="/home">Home</a>
-          </span>
-          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
-            <a href="/user/changePassword">Change Password</a>
-          </span>
-        </div>
-        <div>
-          <span class="text-gray-300 mr-4">Welcome <%= userName %></span>
-          <a
-            href="/signout"
-            class="inline-block px-4 py-2 text-white bg-red-600 rounded-md font-medium"
-            >Sign Out</a
-          >
-        </div>
-      </div>
-    </nav>
+    <%- include('navigationBar') %>
     <br /><br /><br />
     <div class="container mx-auto py-8">
       <div class="grid grid-cols-6">
@@ -156,21 +134,22 @@
           <br />
           <h4 class="text-lg font-serif">
             This session is scheduled for <%=
-            sessionDetails.sessionDate.toLocaleString('en-US', { day: '2-digit',
-            month: '2-digit', year: 'numeric', hour: '2-digit', minute:
-            '2-digit', hour12: true }) %>, to be played at "<%=
+            sessionDetails.sessionDate.toLocaleString('en-US', { day: '2-digit'
+            , month: '2-digit' , year: 'numeric' , hour: '2-digit' , minute:
+            '2-digit' , hour12: true }) %>, to be played at "<%=
             sessionDetails.sessionVenue %>."
           </h4>
           <h3 class="text-xl font-semibold font-serif mt-4">Players</h3>
           <div
             class="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
-            <% if(sessionDetails.sessionPlayers.length > 0){ %>
+            <% if(sessionDetails.sessionPlayers.length> 0){ %>
             <ul class="mt-2">
               <% for(var i=0; i < sessionDetails.sessionPlayers.length; i++) {%>
               <li class="border border-gray-300 rounded-md p-2 mb-2">
                 <div>
-                  <%= sessionDetails.sessionPlayers[i] %> <% if(isCreator && isPrevious === false) { %>
+                  <%= sessionDetails.sessionPlayers[i] %> <% if(isCreator &&
+                  isPrevious===false) { %>
                   <a
                     href="#"
                     class="trash-icon ml-2"
@@ -199,9 +178,7 @@
             <% } %>
           </div>
           <% if(sessionPlayer.length> 0) { %>
-          <div
-            class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          >
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <ul class="list-none">
               <% for(var i=0; i < sessionPlayer.length; i++) { %>
               <li class="users border border-gray-300 rounded-md p-2 mb-2">
@@ -214,11 +191,15 @@
                   <h3 class="font-bold">You</h3>
                   <% } %> <% } else { %> <%
                   if(sessionDetails.creatorId==sessionPlayer[i].userId) { %>
-                  <h3><%= sessionPlayer[i].userName %></h3>
+                  <h3>
+                    <%= sessionPlayer[i].userName %>
+                  </h3>
                   <h3 class="text-gray-500">Organizer</h3>
                   <% }else{ %>
-                  <h3><%= sessionPlayer[i].userName %></h3>
-                  <% } %> <% } %> <% if(isCreator && isPrevious === false) { %>
+                  <h3>
+                    <%= sessionPlayer[i].userName %>
+                  </h3>
+                  <% } %> <% } %> <% if(isCreator && isPrevious===false) { %>
                   <a
                     href="#"
                     class="trash-icon ml-2"
@@ -247,10 +228,10 @@
           </div>
           <% } else { %>
           <p class="mt-4">No Players have joined this session.</p>
-          <% } %> <% if ((isParticipant === false && isFull === false &&
-          isPrevious === false && sessionDetails.isCancelled === false) ||
-          (isFull === false && isPrevious === false)) { %> <% if (!isParticipant
-          && allowUser === true) { %>
+          <% } %> <% if ((isParticipant===false && isFull===false &&
+          isPrevious===false && sessionDetails.isCancelled===false) ||
+          (isFull===false && isPrevious===false)) { %> <% if (!isParticipant &&
+          allowUser===true) { %>
           <button
             class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
             type="submit"
@@ -258,7 +239,7 @@
           >
             Join Session
           </button>
-          <% } else if (!isParticipant && allowUser === false) { %>
+          <% } else if (!isParticipant && allowUser===false) { %>
           <p class="mt-4">
             You are not allowed to join in this Session as you have a Sport
             session scheduled at the same date and time
@@ -275,7 +256,7 @@
               </div>
             </td>
           </tr>
-          <% } %> <% } %> <% if(isParticipant && isPrevious === false) { %>
+          <% } %> <% } %> <% if(isParticipant && isPrevious===false) { %>
           <p class="mt-4">You are Participant in this Session</p>
           <button
             class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"

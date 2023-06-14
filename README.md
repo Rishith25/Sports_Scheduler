@@ -4,7 +4,6 @@ This is the final capstone project for AICTE Lite WD201 Pupilfirst.
 
 [Website](https://sports-scheduler-rishith.onrender.com)
 
-
 ## Features
 
 ### Admin

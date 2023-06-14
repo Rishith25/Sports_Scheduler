@@ -41,11 +41,14 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async upComingSessions(sportsId) {
+      const currentDateTime = new Date();
+      currentDateTime.setHours(currentDateTime.getHours() + 5);
+      currentDateTime.setMinutes(currentDateTime.getMinutes() + 30);
       return this.findAll({
         where: {
           sportsId,
           sessionDate: {
-            [Op.gt]: new Date(),
+            [Op.gt]: currentDateTime,
           },
           isCancelled: false,
         },
@@ -53,11 +56,14 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async previousSessions(sportsId) {
+      const currentDateTime = new Date();
+      currentDateTime.setHours(currentDateTime.getHours() + 5);
+      currentDateTime.setMinutes(currentDateTime.getMinutes() + 30);
       return this.findAll({
         where: {
           sportsId,
           sessionDate: {
-            [Op.lt]: new Date(),
+            [Op.lt]: currentDateTime,
           },
           isCancelled: false,
         },
@@ -189,22 +195,28 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async getSessionsById(ids) {
+      const currentDateTime = new Date();
+      currentDateTime.setHours(currentDateTime.getHours() + 5);
+      currentDateTime.setMinutes(currentDateTime.getMinutes() + 30);
       return this.findAll({
         where: {
           id: ids,
           sessionDate: {
-            [Op.gt]: new Date(),
+            [Op.gt]: currentDateTime,
           },
         },
       });
     }
 
     static async getSessionByUserId(creatorId) {
+      const currentDateTime = new Date();
+      currentDateTime.setHours(currentDateTime.getHours() + 5);
+      currentDateTime.setMinutes(currentDateTime.getMinutes() + 30);
       return this.findAll({
         where: {
           creatorId,
           sessionDate: {
-            [Op.gt]: new Date(),
+            [Op.gt]: currentDateTime,
           },
         },
       });
@@ -235,6 +247,28 @@ module.exports = (sequelize, DataTypes) => {
           id,
           sessionDate,
           isCancelled: false,
+        },
+      });
+    }
+
+    static async getpreviousSessionsById(ids) {
+      const currentDateTime = new Date();
+      currentDateTime.setHours(currentDateTime.getHours() + 5);
+      currentDateTime.setMinutes(currentDateTime.getMinutes() + 30);
+      return this.findAll({
+        where: {
+          id: ids,
+          sessionDate: {
+            [Op.lt]: currentDateTime,
+          },
+        },
+      });
+    }
+
+    static async getUserCreatedSessions(creatorId) {
+      return this.findAll({
+        where: {
+          creatorId,
         },
       });
     }

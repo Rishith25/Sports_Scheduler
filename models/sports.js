@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static addSport({ sportsname }) {
-      return this.create({ sportsname: sportsname });
+    static addSport({ sportsname, userId }) {
+      return this.create({ sportsname: sportsname, userId: userId });
     }
 
     static getSportsList() {
@@ -55,6 +55,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async getAdminSports(userId) {
+      return this.findAll({
+        where: {
+          userId: userId,
+        },
+      });
+    }
   }
   Sports.init(
     {
@@ -66,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         unique: true,
       },
+      userId: DataTypes.INTEGER,
     },
     {
       sequelize,

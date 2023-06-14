@@ -241,6 +241,8 @@ app.get(
         loggedInUserId
       );
 
+      //Admin Created Sports List
+      const adminCreated = await Sports.getAdminSports(loggedInUserId);
       //List Of Sports
       const SportsList = await Sports.getSportsList();
       // console.log(SportsList)
@@ -253,6 +255,7 @@ app.get(
           isAdmin,
           UserSessionsCreated,
           sessionDetails,
+          adminCreated,
           csrfToken: request.csrfToken(),
         });
       } else {
@@ -293,6 +296,7 @@ app.get(
     const userName = request.user.firstName + " " + request.user.lastName;
     const SportList = await Sports.getSportsList();
     let sessionCount = [];
+    let sportsTitles = [];
     let sportsNames = [];
     let sportsIds = [];
     for (let i = 0; i < SportList.length; i++) {
@@ -480,11 +484,17 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
     const user = request.user;
+    const userId = request.user.id;
     const userName = request.user.firstName + " " + request.user.lastName;
+
+    const adminCreated = await Sports.getAdminSports(userId);
+    console.log(adminCreated);
     response.render("createsport", {
       title: "Sports Scheduler",
       userName,
       user,
+      userId,
+      adminCreated,
       csrfToken: request.csrfToken(),
     });
   }
@@ -500,6 +510,7 @@ app.post(
     try {
       const listSports = await Sports.addSport({
         sportsname: request.body.sportsname,
+        userId: request.user.id,
       });
       return response.redirect("/home");
     } catch (error) {
@@ -666,6 +677,8 @@ app.get(
 
     //IsPrevious
     const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + 5);
+    currentDate.setMinutes(currentDate.getMinutes() + 30);
     const isPrevious = sessionDetails.sessionDate < currentDate;
 
     //IsCreator
@@ -1060,6 +1073,47 @@ app.post(
     } catch (error) {
       console.log(error);
       request.flash("error", "An error occurred while changing the password");
+      return response.status(422).json(error);
+    }
+  }
+);
+
+app.get(
+  "/mysessions",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    try {
+      const user = request.user;
+      const userName = request.user.firstName + " " + request.user.lastName;
+      const SportsList = await Sports.getSportsList();
+      const SessionsJoinedByUser = await sessionPlayers.getSessionsJoined(
+        user.id
+      );
+      const listOfSessionsJoined = [];
+      for (var i = 0; i < SessionsJoinedByUser.length; i++) {
+        listOfSessionsJoined.push(SessionsJoinedByUser[i].sessionId);
+      }
+      const upComingSessionDetails = await Sessions.getSessionsById(
+        listOfSessionsJoined
+      );
+      const previousSessionDetails = await Sessions.getpreviousSessionsById(
+        listOfSessionsJoined
+      );
+      const userCreatedSessions = await Sessions.getUserCreatedSessions(
+        user.id
+      );
+      response.render("mySessions", {
+        title: "Sports Scheduler",
+        user,
+        userName,
+        SportsList,
+        SessionsJoinedByUser,
+        upComingSessionDetails,
+        previousSessionDetails,
+        userCreatedSessions,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
       return response.status(422).json(error);
     }
   }

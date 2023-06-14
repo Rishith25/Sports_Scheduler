@@ -4,49 +4,28 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
+    <title>
+      <%= title %>
+    </title>
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
 
   <body class="bg-gray-200">
-    <nav class="bg-gray-800">
-      <div
-        class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
-      >
-        <div class="text-white text-lg font-semibold">
-          <a href="/home"><%= title %></a>
-          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
-            <a href="/home">Home</a>
-          </span>
-          <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
-            <a href="/user/changePassword">Change Password</a>
-          </span>
-        </div>
-
-        <div>
-          <span class="text-gray-300 mr-4">Welcome <%= userName %></span>
-          <a
-            href="/signout"
-            class="inline-block px-4 py-2 text-white bg-red-600 rounded-md font-medium"
-            >Sign Out</a
-          >
-        </div>
-      </div>
-    </nav>
-    <br>
-    <br>
+    <%- include('navigationBar') %>
+    <br />
+    <br />
     <div class="container mx-auto py-8">
       <div class="grid grid-cols-6 gap-4">
         <div class="col-start-2 col-span-4 bg-white rounded-lg shadow-md p-8">
           <div
             class="col-start-3 col-span-2 bg-white mr-4 rounded"
-            style="padding: 20px"
+            style="padding: 20px;"
           >
             <div class="mb-4 flex justify-center"><%- include('header') %></div>
 
-            <% if(user[0].role == "admin") {%>
+            <% if(user[0].role=="admin" ) {%>
             <div>
               <h5 class="text-red-600 flex justify-center text-xl">
                 Administrative Actions
@@ -73,7 +52,7 @@
               <div
                 class="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
               >
-                <% if(sessionDetails.length > 0){%> <% for(var i=0; i <
+                <% if(sessionDetails.length> 0){%> <% for(var i=0; i <
                 sessionDetails.length; i++) { %>
                 <div class="border border-gray-300 rounded-md p-4 mb-4">
                   <a href="/sessions/<%= sessionDetails[i].id %>">
@@ -85,7 +64,9 @@
                     <% if(sessionDetails[i].sessionCount==1 ) { %>
                     <p class="text-sm font-semibold text-red-600">Last Slot</p>
                     <% } else if(sessionDetails[i].sessionCount==0 ) { %>
-                    <p class="text-sm font-semibold text-red-600">Fully Booked</p>
+                    <p class="text-sm font-semibold text-red-600">
+                      Fully Booked
+                    </p>
                     <% } else { %>
                     <p class="text-sm font-semibold text-green-600">
                       <%= sessionDetails[i].sessionCount + " slots" %>
@@ -106,7 +87,20 @@
               </div>
             </div>
             <div class="mt-8">
-              <%- include('sports', { title: "Sports", "data": SportsList }) %>
+              <%- include('sports', { title: "Sports" , "data" : SportsList })
+              %> <% if(isAdmin) {%>
+              <br />
+              <div
+                class="flex-items-center w-fit my-2 px-2 py-1 border-gray-300 border rounded hover:bg-gray-100"
+              >
+                <h4>Sports Created By You:</h4>
+                <% for( var i = 0; i < adminCreated.length; i++){%>
+                <li>
+                  <%= adminCreated[i].sportsname %>
+                  <br />
+                </li>
+                <% } %> <%}%>
+              </div>
             </div>
 
             <div class="mt-8">
@@ -116,7 +110,7 @@
               <div
                 class="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
               >
-                <% if(UserSessionsCreated.length > 0){%> <% for(var i=0; i <
+                <% if(UserSessionsCreated.length> 0){%> <% for(var i=0; i <
                 UserSessionsCreated.length; i++) { %>
                 <div class="border border-gray-300 rounded-md p-4 mb-4">
                   <a href="/sessions/<%= UserSessionsCreated[i].id %>">
@@ -129,7 +123,9 @@
                     <% if(UserSessionsCreated[i].sessionCount==1 ) { %>
                     <p class="text-sm font-semibold text-red-600">Last Slot</p>
                     <% } else if(UserSessionsCreated[i].sessionCount==0 ) { %>
-                    <p class="text-sm font-semibold text-red-600">Fully Booked</p>
+                    <p class="text-sm font-semibold text-red-600">
+                      Fully Booked
+                    </p>
                     <% } else { %>
                     <p class="text-sm text-green-600">
                       <%= UserSessionsCreated[i].sessionCount + " slots" %>
