@@ -48,6 +48,11 @@
                   </p>
                   <% } %> <% if(upComingSessions[i].isCancelled) { %>
                   <h3 class="text-red-600 font-semibold">Cancelled</h3>
+                  <h3 class="font-semibold text-gray-500">Reason</h3>
+                    <p class="text-sm font-semibold text-red-600">
+                      <%= upComingSessions[i].reason %>
+                    </p>
+                    <% } %>
                   <% } %>
                 </a>
               </div>
@@ -85,6 +90,11 @@
                   </p>
                   <% } %> <% if(previousSessions[i].isCancelled) { %>
                   <h3 class="text-red-600 font-semibold">Cancelled</h3>
+                  <h3 class="font-semibold text-gray-500">Reason</h3>
+                    <p class="text-sm font-semibold text-red-600">
+                      <%= previousSessions[i].reason %>
+                    </p>
+                    <% } %>
                   <% } %>
                 </a>
               </div>

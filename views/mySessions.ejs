@@ -48,6 +48,11 @@
                   </p>
                   <% } %> <% if(upComingSessionDetails[i].isCancelled) { %>
                   <h3 class="text-red-600 font-semibold">Cancelled</h3>
+                  <h3 class="font-semibold text-gray-500">Reason</h3>
+                    <p class="text-sm font-semibold text-red-600">
+                      <%= upComingSessionDetails[i].reason %>
+                    </p>
+                    <% } %>
                   <% } %>
                 </a>
               </div>
@@ -86,6 +91,11 @@
                   </p>
                   <% } %> <% if(previousSessionDetails[i].isCancelled) { %>
                   <h3 class="text-red-600 font-semibold">Cancelled</h3>
+                  <h3 class="font-semibold text-gray-500">Reason</h3>
+                    <p class="text-sm font-semibold text-red-600">
+                      <%= previousSessionDetails[i].reason %>
+                    </p>
+                    <% } %>
                   <% } %>
                 </a>
               </div>
@@ -124,6 +134,11 @@
                   </p>
                   <% } %> <% if(userCreatedSessions[i].isCancelled) { %>
                   <h3 class="text-red-600 font-semibold">Cancelled</h3>
+                  <h3 class="font-semibold text-gray-500">Reason</h3>
+                    <p class="text-sm font-semibold text-red-600">
+                      <%= userCreatedSessions[i].reason %>
+                    </p>
+                    <% } %>
                   <% } %>
                 </a>
               </div>
