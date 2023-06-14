@@ -399,7 +399,7 @@ app.post(
         list,
         startDate,
         toDate,
-        csrfToken: request.csrfToken,
+        csrfToken: request.csrfToken(),
       });
     } catch (error) {
       console.log(error);
