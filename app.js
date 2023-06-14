@@ -3,14 +3,15 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 const express = require("express");
-var csrf = require("tiny-csrf");
+// var csrf = require("tiny-csrf");
+var csrf = require("csurf");
 const app = express();
 const { Sports, Sessions, User, sessionPlayers } = require("./models");
 const bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
 const path = require("path");
-const { Op } = require("sequelize");
+// const { Op } = require("sequelize");
 const flash = require("connect-flash");
 
 app.set("views", path.join(__dirname, "views"));
@@ -19,7 +20,6 @@ const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
-const { error } = require("console");
 
 app.use(flash());
 
@@ -29,8 +29,8 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("shh! some secret string"));
-app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
-
+// app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+app.use(csrf({ cookie: true }));
 app.use(
   session({
     secret: "my_super-secret-key-2148411464649777996311316",
@@ -293,47 +293,62 @@ app.get(
       return response.redirect("/reports");
     }
 
-    const user = request.user;
-    const userName = request.user.firstName + " " + request.user.lastName;
-    const SportList = await Sports.getSportsList();
-    let sessionCount = [];
-    let sportsTitles = [];
-    let sportsNames = [];
-    let sportsIds = [];
-    for (let i = 0; i < SportList.length; i++) {
-      const count = await Sessions.countSessionsAll(SportList[i].id);
-      sessionCount.push(count);
-      sportsNames.push({
-        sportsname: SportList[i].sportsname,
-        sportsId: SportList[i].id,
-        sessions: count,
+    try {
+      const user = request.user;
+      const userName = request.user.firstName + " " + request.user.lastName;
+      const SportList = await Sports.getSportsList();
+      let sessionCount = [];
+      let sportsTitles = [];
+      let sportsNames = [];
+      let sportsIds = [];
+      for (let i = 0; i < SportList.length; i++) {
+        const count = await Sessions.countSessionsAll(SportList[i].id);
+        sessionCount.push(count);
+        sportsNames.push({
+          sportsname: SportList[i].sportsname,
+          sportsId: SportList[i].id,
+          sessions: count,
+        });
+      }
+      console.log(sessionCount);
+      console.log(sportsNames);
+
+      var sessionsPerSport = {};
+
+      for (let i = 0; i < SportList.length; i++) {
+        sessionsPerSport[sportsNames[i][0]] = sessionCount[i];
+      }
+
+      var list = Object.entries(sportsNames); //sessionsPerSports in array format = [['Sport Name', 'count']...]
+
+      list.sort((first, second) => {
+        return second[1].sessions - first[1].sessions;
       });
+      console.log(list);
+
+      if (request.accepts("html")) {
+        response.render("reports", {
+          title: "Sports Scheduler",
+          userName,
+          user,
+          list,
+          startDate,
+          toDate,
+          csrfToken: request.csrfToken(),
+        });
+      } else {
+        response.json({
+          userName,
+          user,
+          list,
+          startDate,
+          toDate,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
     }
-    console.log(sessionCount);
-    console.log(sportsNames);
-
-    var sessionsPerSport = {};
-
-    for (let i = 0; i < SportList.length; i++) {
-      sessionsPerSport[sportsNames[i][0]] = sessionCount[i];
-    }
-
-    var list = Object.entries(sportsNames); //sessionsPerSports in array format = [['Sport Name', 'count']...]
-
-    list.sort((first, second) => {
-      return second[1].sessions - first[1].sessions;
-    });
-    console.log(list);
-
-    response.render("reports", {
-      title: "Sports Scheduler",
-      userName,
-      user,
-      list,
-      startDate,
-      toDate,
-      csrfToken: request.csrfToken(),
-    });
   }
 );
 
