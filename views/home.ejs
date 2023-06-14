@@ -88,7 +88,7 @@
             </div>
             <div class="mt-8">
               <%- include('sports', { title: "Sports" , "data" : SportsList })
-              %> <% if(isAdmin) {%>
+              %> <% if(user[0].role == "admin") {%>
               <br />
               <div
                 class="flex-items-center w-fit my-2 px-2 py-1 border-gray-300 border rounded hover:bg-gray-100"

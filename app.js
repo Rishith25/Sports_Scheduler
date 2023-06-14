@@ -223,7 +223,7 @@ app.get(
 
       //isAdmin
       let isAdmin = false;
-      if (user.role == "admin") {
+      if (user[0].role == "admin") {
         isAdmin = true;
       }
       //User Joined Sesseions
@@ -236,6 +236,7 @@ app.get(
       const sessionDetails = await Sessions.getSessionsById(
         listOfSessionsJoined
       );
+      console.log(isAdmin);
       // console.log(sessionDetails);
       const UserSessionsCreated = await Sessions.getSessionByUserId(
         loggedInUserId
