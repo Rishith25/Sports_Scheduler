@@ -98,6 +98,6 @@ describe("Sports Application", function () {
       sportsname: "Cricket",
       _csrf: csrfToken,
     });
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(403);
   });
 });
