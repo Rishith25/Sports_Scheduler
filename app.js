@@ -196,7 +196,17 @@ app.post("/users", async (request, response) => {
     });
   } catch (error) {
     console.log(error);
-    return response.status(422).json(error);
+    if (error.name == "SequelizeUniqueConstraintError") {
+      const errMsg = error.errors.map((error) => error.message);
+      console.log(errMsg);
+      errMsg.forEach((message) => {
+        if (message == "email must be unique") {
+          request.flash("error", "Email already exists");
+          return response.redirect("/signup");
+        }
+        return response.status(422).json(error);
+      });
+    }
   }
 });
 

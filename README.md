@@ -26,5 +26,6 @@ This is the final capstone project for AICTE Lite WD201 Pupilfirst.
 - Add Players or Remove Players.
 - Cancel the sessions created and give the reason if required.
 
-
 ### Screenshots
+
+-
