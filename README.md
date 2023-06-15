@@ -40,7 +40,7 @@ This is the final capstone project for AICTE Lite WD201 Pupilfirst.
 
 - LOGIN PAGE
   ![login](https://github.com/Rishith25/Sports_Scheduler/assets/119791436/2a3f387e-b23a-4d95-9e03-7bdb87906a61)
-  [loginpage](https://github.com/Rishith25/Sports_Scheduler/assets/119791436/da0b01a3-c351-4556-ad59-c03687f6929b)
+  ![loginpage](https://github.com/Rishith25/Sports_Scheduler/assets/119791436/da0b01a3-c351-4556-ad59-c03687f6929b)
 
 - HOME PAGE
   ![home](https://github.com/Rishith25/Sports_Scheduler/assets/119791436/d215c603-d5c7-4ba4-b1e8-00a4a9333f57)
