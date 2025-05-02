@@ -43,13 +43,11 @@
         <div class="col-start-2 col-span-4 bg-white rounded-lg shadow-md p-8">
           <div
             class="col-start-3 col-span-2 bg-white mr-4 rounded"
-            style="padding: 20px;"
+            style="padding: 20px"
           >
             <div class="font-semibold text-gray-600">
               <span>
-                <h1 class="text-3xl">
-                  <%= sportsname %> Sessions
-                </h1>
+                <h1 class="text-3xl"><%= sportsname %> Sessions</h1>
               </span>
               <span>
                 <% if(user.role=="admin" ) {%>
@@ -112,17 +110,11 @@
                     <p class="text-sm font-semibold text-red-600">
                       <%= sessionsList[i].reason %>
                     </p>
-                    
+
                     <% } %>
                   </a>
-                  </div>
-                  <% } %>
-                  <% } %>
-                    
-                  
-                
-                
-                
+                </div>
+                <% } %> <% } %>
               </div>
             </div>
             <div class="mt-4">

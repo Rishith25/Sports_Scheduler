@@ -3,25 +3,33 @@
     class="container mx-auto px-4 py-2 flex justify-between items-center fixed bg-gray-800"
   >
     <div class="text-white text-lg font-semibold">
-      <a href="/home"> <%= title %> </a>
+      <a href="/home">
+        <!--Links-->
+        <%= title %>
+      </a>
       <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
         <a href="/home">Home</a>
+        <!--Links-->
       </span>
       <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
-        <a href="/mysessions">My Sessions</a>
+        <a href="/myprofile">My Porfile</a>
+        <!--Links-->
       </span>
       <span class="text-gray-300 mr-4 px-2 py-1 rounded hover">
         <a href="/user/changePassword">Change Password</a>
+        <!--Links-->
       </span>
     </div>
 
     <div>
-      <span class="text-gray-300 mr-4">Welcome <%= userName %></span>
+      <span class="text-gray-300 mr-4">Welcome </span>
+      <!--Links-->
       <a
         href="/signout"
         class="inline-block px-4 py-2 text-white bg-red-600 rounded-md font-medium"
         >Sign Out</a
       >
+      <!--Links-->
     </div>
   </div>
 </nav>

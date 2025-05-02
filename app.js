@@ -1,9 +1,6 @@
-/* eslint-disable semi */
-/* eslint-disable quotes */
-/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 const express = require("express");
-// var csrf = require("tiny-csrf");
 var csrf = require("csurf");
 const app = express();
 const { Sports, Sessions, User, sessionPlayers } = require("./models");
@@ -11,7 +8,6 @@ const bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
 const path = require("path");
-// const { Op } = require("sequelize");
 const flash = require("connect-flash");
 
 app.set("views", path.join(__dirname, "views"));

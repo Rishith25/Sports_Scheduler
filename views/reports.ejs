@@ -93,7 +93,9 @@
                       <td class="text-center border border-gray-300">
                         <%= i+1 %>
                       </td>
-                      <td class="text-center border font-bold border-gray-300 rounded-md">
+                      <td
+                        class="text-center border font-bold border-gray-300 rounded-md"
+                      >
                         <a
                           href="/sports/<%= list[i][1].sportsId %>/reportDetails/<%= startDate %>/<%= toDate %>"
                         >
@@ -110,7 +112,7 @@
                 <p class="text-slate-600 p-3 text-center">
                   *Click on the Sports Title to get the details*
                 </p>
-                <div class="justify-center border rounded-md" >
+                <div class="justify-center border rounded-md">
                   <canvas class="justify-center" id="myChart"></canvas>
                 </div>
               </div>
@@ -119,7 +121,7 @@
         </div>
       </div>
     </div>
-    
+
     <script>
       const sportTitlesx = <%- JSON.stringify(list.map(item => item[1].sportsname)) %>;
       const sessionCountsy = <%- JSON.stringify(list.map(item => item[1].sessions)) %>;
